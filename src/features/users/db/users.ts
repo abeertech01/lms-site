@@ -1,6 +1,21 @@
 import { db } from "@/drizzle/db"
 import { UserTable } from "@/drizzle/schema"
 import { eq } from "drizzle-orm"
+import { revalidateUserCache } from "./cache"
+
+/** "use cache"
+ * This is a directive, telling the system to cache the result of this function.
+ *
+ ** cacheTag()
+ * This labels the cached result with a tag
+
+export async function test() {
+  "use cache"
+  cacheTag("test")
+}
+
+revalidateTag("test")
+*/
 
 /** typeof UserTable.$inferInsert
  * This gives you the TypeScript type representing the structure of values allowed when inserting into UserTable.
@@ -29,6 +44,7 @@ export async function insertUser(data: typeof UserTable.$inferInsert) {
     })
 
   if (!newUser) throw new Error("Failed to create a user")
+  revalidateUserCache(newUser.id)
 
   return newUser
 }
@@ -43,7 +59,8 @@ export async function updateUser(
     .where(eq(UserTable.clerkUserId, clerkUserId))
     .returning()
 
-  if (!updatedUser) throw new Error("Failed to update the user")
+  if (updatedUser == null) throw new Error("Failed to update the user")
+  revalidateUserCache(updatedUser.id)
 
   return updatedUser
 }
@@ -61,7 +78,8 @@ export async function deleteUser({ clerkUserId }: { clerkUserId: string }) {
     .where(eq(UserTable.clerkUserId, clerkUserId))
     .returning()
 
-  if (!deletedUser) throw new Error("Failed to delete the user")
+  if (deletedUser == null) throw new Error("Failed to delete the user")
+  revalidateUserCache(deletedUser.id)
 
   return deletedUser
 }

@@ -3,7 +3,7 @@ import { canAccessAdminPages } from "@/permissions/general"
 import { getCurrentUser } from "@/services/clerk"
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
-import { ReactNode, Suspense } from "react"
+import { ReactNode } from "react"
 
 export default function ConsumerLayout({
   children,
@@ -67,7 +67,8 @@ function Navbar() {
 }
 
 async function AdminLink() {
-  const user = await getCurrentUser()
+  const user = await getCurrentUser({ allData: true })
+  console.log(user.user?.name)
   if (!canAccessAdminPages(user)) return null
 
   return (

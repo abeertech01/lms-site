@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const payload = await req.json()
   const body = JSON.stringify(payload)
 
-  const wh = new Webhook(env.CLERK_WEBHOOK_KEY)
+  const wh = new Webhook(env.CLERK_WEBHOOK_SECRET)
   let event: WebhookEvent
 
   try {
@@ -36,38 +36,37 @@ export async function POST(req: Request) {
 
   switch (event.type) {
     case "user.created":
-    case "user.updated":
-      {
-        const email = event.data.email_addresses.find(
-          (email) => email.id === event.data.primary_email_address_id
-        )?.email_address
-        const name = `${event.data.first_name} ${event.data.last_name}`.trim()
-        if (email == null) return new Response("No email", { status: 400 })
-        if (name === "") return new Response("No name", { status: 400 })
+    case "user.updated": {
+      const email = event.data.email_addresses.find(
+        (email) => email.id === event.data.primary_email_address_id
+      )?.email_address
+      const name = `${event.data.first_name} ${event.data.last_name}`.trim()
+      if (email == null) return new Response("No email", { status: 400 })
+      if (name === "") return new Response("No name", { status: 400 })
 
-        if (event.type === "user.created") {
-          const user = await insertUser({
-            clerkUserId: event.data.id,
+      if (event.type === "user.created") {
+        const user = await insertUser({
+          clerkUserId: event.data.id,
+          email,
+          name,
+          imageUrl: event.data.image_url,
+          role: "user",
+        })
+
+        await syncClerkUserMetadata(user)
+      } else {
+        await updateUser(
+          { clerkUserId: event.data.id },
+          {
             email,
             name,
             imageUrl: event.data.image_url,
-            role: "user",
-          })
-
-          await syncClerkUserMetadata(user)
-        } else {
-          await updateUser(
-            { clerkUserId: event.data.id },
-            {
-              email,
-              name,
-              imageUrl: event.data.image_url,
-              role: event.data.public_metadata.role,
-            }
-          )
-        }
+            role: event.data.public_metadata.role,
+          }
+        )
       }
       break
+    }
     case "user.deleted": {
       if (event.data.id != null) {
         await deleteUser({ clerkUserId: event.data.id })
