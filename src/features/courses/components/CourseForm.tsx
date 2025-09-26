@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { createCourse } from "../actions/courses"
 import { actionToast } from "@/hooks/use-toast"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, CircleCheckBig } from "lucide-react"
 
 export default function CourseForm() {
   const form = useForm<z.infer<typeof courseSchema>>({
@@ -33,7 +33,11 @@ export default function CourseForm() {
     const data = await createCourse(values)
     actionToast({
       actionData: data,
-      icon: <AlertCircle className="w-5 h-5 text-white" />,
+      icon: data.error ? (
+        <AlertCircle className="w-5 h-5 text-white" />
+      ) : (
+        <CircleCheckBig className="w-5 h-5 text-white" />
+      ),
     })
   }
 

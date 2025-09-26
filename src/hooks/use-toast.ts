@@ -52,9 +52,13 @@ function actionToast({
     description: actionData.message,
     variant: actionData.error ? "destructive" : "default",
     style: {
-      backgroundColor: "#ec003f",
+      backgroundColor: actionData.error
+        ? "oklch(58.6% 0.253 17.585)"
+        : "oklch(59.6% 0.145 163.225)",
       color: "white",
-      border: "2px solid #c70036",
+      border: actionData.error
+        ? "2px solid oklch(51.4% 0.222 16.935)"
+        : "2px solid oklch(50.8% 0.118 165.612)",
     },
     ...(icon && { icon }),
   })
