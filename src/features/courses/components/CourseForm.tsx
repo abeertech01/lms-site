@@ -16,21 +16,31 @@ import RequiredLabelIcon from "@/components/RequiredLabelIcon"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { createCourse } from "../actions/courses"
+import { createCourse, updateCourse } from "../actions/courses"
 import { actionToast } from "@/hooks/use-toast"
 import { AlertCircle, CircleCheckBig } from "lucide-react"
 
-export default function CourseForm() {
+export default function CourseForm({
+  course,
+}: {
+  course?: {
+    id: string
+    name: string
+    description: string
+  }
+}) {
   const form = useForm<z.infer<typeof courseSchema>>({
     resolver: zodResolver(courseSchema),
-    defaultValues: {
+    defaultValues: course ?? {
       name: "",
       description: "",
     },
   })
 
   async function onSubmit(values: z.infer<typeof courseSchema>) {
-    const data = await createCourse(values)
+    const action =
+      course == null ? createCourse : updateCourse.bind(null, course.id)
+    const data = await action(values)
     actionToast({
       actionData: data,
       icon: data.error ? (
