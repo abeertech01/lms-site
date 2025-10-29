@@ -64,8 +64,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   if (!decision.ip.isVpn() && !decision.ip.isProxy()) {
     const headers = new Headers(req.headers)
-    setUserCountryHeader(headers, decision.ip.country)
-    // console.log(decision.ip.countryName)
+    setUserCountryHeader(headers, decision.ip.country) // sets the country header, thus we can get the country name and we'll be able to use it.
 
     return NextResponse.next({ request: { headers } })
   }
