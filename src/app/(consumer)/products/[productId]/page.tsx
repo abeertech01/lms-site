@@ -71,9 +71,9 @@ export default async function ProductPage({
                 plural: "courses",
               })}{" "}
               •{" "}
-              {formatPlural(courseCount, {
-                singular: "course",
-                plural: "courses",
+              {formatPlural(lessonCount, {
+                singular: "lesson",
+                plural: "lessons",
               })}
             </div>
           </div>
@@ -167,7 +167,7 @@ async function PurchaseButton({ productId }: { productId: string }) {
   } else {
     return (
       <Button className="text-xl h-auto py-4 px-8 rounded-lg" asChild>
-        <Link href={`products/${productId}/purchase`}>Get Now</Link>
+        <Link href={`/products/${productId}/purchase`}>Get Now</Link>
       </Button>
     )
   }
