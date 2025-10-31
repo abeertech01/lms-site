@@ -9,8 +9,18 @@ import { redirect } from "next/navigation"
 import { NextRequest, NextResponse } from "next/server"
 import Stripe from "stripe"
 
+/** Essentially what do GET and POST do?
+ * GET —
+ * When user completes payment on Stripe's checkout page, Stripe redirects user back to the site. This is when GET handler is triggered.
+ There it retrieves the checkout session from Stripe,
+Processes the purchase (grants course access, records purchase). Then Redirects user to success or failure page
+ * 
+ * POST —
+ * Stripe sends a webhook event to your server (independent of the user's browser)
+ Verifies the webhook signature (security) and processes the same checkout session. Then returns a 200 status to Stripe to acknowledge receipt
+ */
 export async function GET(request: NextRequest) {
-  const stripeSessionId = request.nextUrl.searchParams.get("stripeSessionId")
+  const stripeSessionId = request.nextUrl.searchParams.get("stripeSessionId") // we get it when return_url gets hit.
   if (stripeSessionId == null) redirect("/products/purchase-failure")
 
   let redirectUrl: string
@@ -27,6 +37,14 @@ export async function GET(request: NextRequest) {
   }
 
   return NextResponse.redirect(new URL(redirectUrl, request.url))
+  /**
+   * redirect() from next/navigation only works in Server Components and Server Actions.
+   * It cannot be used inside an API Route or Route Handler (like your GET function).
+   That’s because redirect() throws a special internal error  handled only by the App Router —
+   but route handlers return NextResponse objects, not  components.
+   * Why new URL(redirectUrl, request.url) instead of just the string?
+   It ensures the redirect target is an absolute URL (as NextResponse.redirect() requires a full URL — not a relative one).
+   */
 }
 
 export async function POST(request: NextRequest) {
@@ -69,7 +87,7 @@ async function processStripeCheckout(checkoutSession: Stripe.Checkout.Session) {
   const courseIds = product.courseProducts.map((cp) => cp.courseId)
   db.transaction(async (trx) => {
     try {
-      await addUserCourseAccess({ userId: user.id, courseIds }, trx)
+      await addUserCourseAccess({ userId: user.id, courseIds }, trx) // adds courses the user has access to
       await insertPurchase(
         {
           stripeSessionId: checkoutSession.id,
@@ -80,7 +98,7 @@ async function processStripeCheckout(checkoutSession: Stripe.Checkout.Session) {
           productId,
         },
         trx
-      )
+      ) // inserts purchase data in the database.
     } catch (error) {
       trx.rollback()
       throw error

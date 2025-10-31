@@ -31,6 +31,9 @@ export async function getClientSessionSecret(
             images: [
               new URL(product.imageUrl, env.NEXT_PUBLIC_SERVER_URL).href,
             ],
+            /* new URL(product.imageUrl, env.NEXT_PUBLIC_SERVER_URL).href
+            It creates a full absolute URL for the product image — even if product.imageUrl is a relative path.
+            */
             description: product.description,
           },
           unit_amount: product.priceInDollars * 100,
@@ -40,6 +43,9 @@ export async function getClientSessionSecret(
     ui_mode: "embedded",
     mode: "payment",
     return_url: `${env.NEXT_PUBLIC_SERVER_URL}/api/webhooks/stripe?stripeSessionId={CHECKOUT_SESSION_ID}`,
+    /** return_url is where we send a user after a successful purchase.
+     * {CHECKOUT_SESSION_ID} - a special code for the checkout session id, sending along the url as stripeSessionId
+     */
     customer_email: user.email,
     payment_intent_data: {
       receipt_email: user.email,

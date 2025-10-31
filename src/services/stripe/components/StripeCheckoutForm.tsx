@@ -32,5 +32,10 @@ export function StripeCheckoutForm({
     >
       <EmbeddedCheckout />
     </EmbeddedCheckoutProvider>
+    /**
+     * <EmbeddedCheckout /> is the checkout form for stripe.
+     * stripeClientPromise = holds publishable key
+     * getClientSessionSecret = gets stripe's session secret
+     */
   )
 }
