@@ -16,7 +16,7 @@ export default defineConfig({
     ssl: false,
   },
 })
-/** port
+/** NOTE: port
  * setting port is necessary if you don't want the default port.
  * if you don't set a port postgres will use 5432 as default.
  * when I set "5433:5432" in compose file, it gave me error, because I didn't set port in drizzle.config.ts file. so, it set port 5432 as default. so, it mismatched and got us error.

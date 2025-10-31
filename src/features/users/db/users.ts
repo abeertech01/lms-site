@@ -3,7 +3,8 @@ import { UserTable } from "@/drizzle/schema"
 import { eq } from "drizzle-orm"
 import { revalidateUserCache } from "./cache"
 
-/** "use cache"
+/** NOTE:
+ * "use cache"
  * This is a directive, telling the system to cache the result of this function.
  *
  ** cacheTag()
@@ -17,7 +18,8 @@ export async function test() {
 revalidateTag("test")
 */
 
-/** typeof UserTable.$inferInsert
+/** NOTE:
+ * typeof UserTable.$inferInsert
  * This gives you the TypeScript type representing the structure of values allowed when inserting into UserTable.
  *
  ** returning()

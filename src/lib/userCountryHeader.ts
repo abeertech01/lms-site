@@ -13,7 +13,8 @@ export function setUserCountryHeader(
     headers.set(COUNTRY_HEADER_KEY, country)
   }
 }
-/** setUserCountryHeader
+/** NOTE:
+ * setUserCountryHeader
  * This one sets header for country
  *
  * if country isn't passed through, that means this request isn't coming from a natural way, it could be an attempt of hacking. So, the country header will not be set. the else block is the vice-versa.

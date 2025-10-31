@@ -4,7 +4,8 @@ import { CourseTable } from "./course"
 import { relations } from "drizzle-orm"
 import { LessonTable } from "./lesson"
 
-/** Course section - what is its use?
+/** NOTE:
+ * Course section - what is its use?
  * Every course has different sections. And every section has lessons.
  * This section schema represents each section.
  * This approach makes it all organized.

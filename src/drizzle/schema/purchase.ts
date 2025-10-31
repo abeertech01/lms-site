@@ -28,7 +28,8 @@ export const PurchaseTable = pgTable("purchases", {
   createdAt,
   updatedAt,
 })
-/** pricePaidCents
+/** NOTE:
+ * pricePaidCents
  * stripe handles everything in cents, that's why the field is named in cents
  *
  ** jsonb()

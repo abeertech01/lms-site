@@ -18,7 +18,7 @@ export const CourseProductTable = pgTable(
   },
   (t) => [primaryKey({ columns: [t.courseId, t.productId] })]
 )
-/** courseId - { onDelete: "restrict" }
+/** NOTE: courseId - { onDelete: "restrict" }
  * 'restrict' restricts deletion of a course when it is in a product.
  * here: basically user cannot delete the course because of 'restrict'. CourseProduct record will not be affected.
  *
@@ -40,6 +40,7 @@ export const CourseProductRelationships = relations(
   })
 )
 
-/** relations
+/** NOTE:
+ * relations
  * Here it says - Every CourseProductTable record is related to single course and single product.
  */

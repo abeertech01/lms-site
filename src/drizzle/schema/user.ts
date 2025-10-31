@@ -18,7 +18,8 @@ export const UserTable = pgTable("users", {
   createdAt,
   updatedAt,
 })
-/** deletedAt: timestamp({ withTimezone: true })
+/** NOTE:
+ * deletedAt: timestamp({ withTimezone: true })
  * user stores the timestamp in its local time. But it's being stored in utc time.
  */
 

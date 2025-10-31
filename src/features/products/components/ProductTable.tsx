@@ -80,7 +80,8 @@ export default function ProductTable({
                 <Button asChild>
                   <Link href={`/admin/products/${product.id}/edit`}>Edit</Link>
                 </Button>
-                {/** action={deleteProduct.bind(null, product.id)}
+                {/** NOTE:
+                 * action={deleteProduct.bind(null, product.id)}
                  * Each button gets its own pre-configured delete function.
                  *
                  * why couldn't we do onClick={deleteProduct(product.id)} or onClick={() => deleteProduct(product.id)} ?

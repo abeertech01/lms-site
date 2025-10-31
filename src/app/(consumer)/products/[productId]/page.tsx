@@ -195,7 +195,7 @@ async function Price({ price }: { price: number }) {
 async function getPublicProduct(id: string) {
   "use cache"
   cacheTag(getProductIdTag(id))
-  // A big/detailed explanation has been given in the bottom of this function.
+  // NOTE: A big/detailed explanation has been given in the bottom of this function.
 
   const product = await db.query.ProductTable.findFirst({
     columns: {
@@ -248,7 +248,7 @@ async function getPublicProduct(id: string) {
     ...other,
     courses: courseProducts.map((cp) => cp.course),
   }
-  /**
+  /** NOTE:
    * The product data includes information from the
    * - product itself
    * - Associated courses

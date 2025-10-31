@@ -12,7 +12,7 @@ export const db = drizzle({
     port: env.DB_PORT,
   },
 })
-/**
+/** NOTE:
  * port
  * port must not be missed, if the app is not running on port 5432.
  */

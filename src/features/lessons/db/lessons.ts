@@ -13,7 +13,8 @@ export async function getNextCourseLessonOrder(sectionId: string) {
   return lesson ? lesson.order + 1 : 0
 }
 
-/** db.transaction(async (trx) => { ... })
+/** NOTE:
+ * db.transaction(async (trx) => { ... })
  * This starts a database transaction using Drizzle ORM.
   Inside this block, all DB operations run on a single connection (trx).
   If one of them fails, everything inside automatically rolls back.

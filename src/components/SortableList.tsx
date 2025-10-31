@@ -18,7 +18,8 @@ type PromiseResponse = {
   message: string
 }
 
-/** children: (items: T[]) => ReactNode
+/** NOTE: 
+ * children: (items: T[]) => ReactNode
  * means the children is a function — not plain JSX.
 That function receives the items array (typed as T[])
 and returns some JSX (ReactNode).

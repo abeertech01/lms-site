@@ -40,7 +40,7 @@ async function getProducts() {
       priceInDollars: DbProductTable.priceInDollars,
       description: DbProductTable.description,
       imageUrl: DbProductTable.imageUrl,
-      coursesCount: countDistinct(CourseProductTable.courseId), // countDistinct(column) counts how many unique (non-duplicate) values exist in that column. It’s just Drizzle’s way of writing SQL’s COUNT(DISTINCT column).
+      coursesCount: countDistinct(CourseProductTable.courseId), // NOTE: countDistinct(column) counts how many unique (non-duplicate) values exist in that column. It’s just Drizzle’s way of writing SQL’s COUNT(DISTINCT column).
       customersCount: countDistinct(PurchaseTable.userId),
     })
     .from(DbProductTable)

@@ -6,7 +6,8 @@ import { CourseProductTable } from "./courseProduct"
 export const productStatuses = ["public", "private"] as const
 export type ProductStatus = (typeof productStatuses)[number]
 export const productStatusEnum = pgEnum("product_status", productStatuses)
-/** Meaning of (typeof productStatuses)[number]
+/** NOTE:
+ * Meaning of (typeof productStatuses)[number]
  * type of an array is literally the array.
  * (typeof productStatuses)[number] = it signifies to a single element of that array. Either element can be the type.
  */

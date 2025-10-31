@@ -64,7 +64,7 @@ function actionToast({
   })
 }
 
-// If you still want a hook wrapper for API parity
+// NOTE: If you still want a hook wrapper for API parity
 function useToast() {
   return {
     toast,

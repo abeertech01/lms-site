@@ -84,7 +84,8 @@ export default function LessonForm({
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-6 @container"
       >
-        {/* @container and @lg
+        {/* NOTE:
+         * @container and @lg
          * @container makes the element 1024px wide.
          * normally lg works based on viewport. But @lg works based on its parent. So, @lg activates when its parent is 1024px or large.
          */}

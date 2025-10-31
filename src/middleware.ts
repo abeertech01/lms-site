@@ -1,5 +1,4 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
-import { forbidden, notFound } from "next/navigation"
 import arcjet, { detectBot, shield, slidingWindow } from "@arcjet/next"
 import { env } from "./data/env/server"
 import { setUserCountryHeader } from "./lib/userCountryHeader"
@@ -15,7 +14,7 @@ const isPublicRoute = createRouteMatcher([
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"])
 
-/**
+/** NOTE:
  * Shield protects your app from common attacks e.g. SQL injection
  * LIVE = Active enforcement — the rule actually blocks, rate-limits, or rejects real requests when triggered.
  * DRY_RUN = the rule records and logs what it would have done but doesn’t block requests. Basically this one is used in testing purpose, it doesn't really block or limit use.
@@ -51,11 +50,15 @@ export default clerkMiddleware(async (auth, req) => {
       : req
   )
 
-  if (decision.isDenied()) return forbidden()
+  if (decision.isDenied()) {
+    return new NextResponse(null, { status: 403 })
+  }
 
   if (isAdminRoute(req)) {
     const user = await auth.protect()
-    if (user.sessionClaims.role !== "admin") return notFound()
+    if (user.sessionClaims.role !== "admin") {
+      return new NextResponse(null, { status: 404 })
+    }
   }
 
   if (!isPublicRoute(req)) {
@@ -64,7 +67,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   if (!decision.ip.isVpn() && !decision.ip.isProxy()) {
     const headers = new Headers(req.headers)
-    setUserCountryHeader(headers, decision.ip.country) // sets the country header, thus we can get the country name and we'll be able to use it.
+    setUserCountryHeader(headers, decision.ip.country) // NOTE: sets the country header, thus we can get the country name and we'll be able to use it.
 
     return NextResponse.next({ request: { headers } })
   }
@@ -72,9 +75,9 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
+    // NOTE: Skip Next.js internals and all static files, unless found in search params
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
+    // NOTE: Always run for API routes
     "/(api|trpc)(.*)",
   ],
 }

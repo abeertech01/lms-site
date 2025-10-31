@@ -64,7 +64,8 @@ export default function CourseTable({
                 <Button asChild>
                   <Link href={`/admin/courses/${course.id}/edit`}>Edit</Link>
                 </Button>
-                {/** action={deleteCourse.bind(null, course.id)}
+                {/** NOTE:
+                 * action={deleteCourse.bind(null, course.id)}
                  * Each button gets its own pre-configured delete function.
                  *
                  * why couldn't we do onClick={deleteCourse(course.id)} or onClick={() => deleteCourse(course.id)} ?
@@ -87,7 +88,7 @@ export default function CourseTable({
   )
 }
 
-/*
+/* NOTE:
  * ❌ action={deleteCourse(course.id)}
  * This calls deleteCourse immediately during render.
  * React expects a function reference for onClick, not the result of calling a function.
