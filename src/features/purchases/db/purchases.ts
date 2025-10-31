@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db"
 import { PurchaseTable } from "@/drizzle/schema"
-import { revalidatePurchaseCache } from "./db/cache"
+import { revalidatePurchaseCache } from "./cache"
 
 export async function insertPurchase(
   data: typeof PurchaseTable.$inferInsert,
