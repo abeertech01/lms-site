@@ -6,6 +6,8 @@ type CACHE_TAG =
   | "courseSections"
   | "lessons"
   | "purchases"
+  | "userLessonComplete"
+
 export function getGlobalTag(tag: CACHE_TAG) {
   return `global:${tag}` as const
 }
