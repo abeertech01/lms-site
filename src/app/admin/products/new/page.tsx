@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import PageHeader from "@/components/PageHeader"
 import { db } from "@/drizzle/db"
 import { CourseTable } from "@/drizzle/schema"

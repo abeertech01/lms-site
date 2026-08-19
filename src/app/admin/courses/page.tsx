@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import PageHeader from "@/components/PageHeader"
 import { Button } from "@/components/ui/button"
 import { db } from "@/drizzle/db"
