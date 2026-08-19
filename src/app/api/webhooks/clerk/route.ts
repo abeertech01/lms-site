@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     case "user.created":
     case "user.updated": {
       const email = event.data.email_addresses.find(
-        (email) => email.id === event.data.primary_email_address_id
+        (email) => email.id === event.data.primary_email_address_id,
       )?.email_address
       const name = `${event.data.first_name} ${event.data.last_name}`.trim()
       if (email == null) return new Response("No email", { status: 400 })
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
             name,
             imageUrl: event.data.image_url,
             role: event.data.public_metadata.role,
-          }
+          },
         )
       }
       break

@@ -32,8 +32,8 @@ export default async function PurchasePage({
   const { purchaseId } = await params
 
   return (
-    <div className="container my-6">
-      <Suspense fallback={<LoadingSpinner className="size-36 mx-auto" />}>
+    <div className="my-6 container">
+      <Suspense fallback={<LoadingSpinner className="mx-auto size-36" />}>
         <SuspenseBoundary purchaseId={purchaseId} />
       </Suspense>
     </div>
@@ -53,7 +53,7 @@ async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
   const { receiptUrl, pricingRows } = await getStripeDetails(
     purchase.stripeSessionId,
     purchase.pricePaidInCents,
-    purchase.refundedAt != null
+    purchase.refundedAt != null,
   )
 
   return (
@@ -80,25 +80,25 @@ async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="pb-4 grid grid-cols-2 gap-8 border-t pt-4">
+        <CardContent className="gap-8 grid grid-cols-2 pt-4 pb-4 border-t">
           <div>
-            <label className="text-sm text-muted-foreground">Date</label>
+            <label className="text-muted-foreground text-sm">Date</label>
             <div>{formatDate(purchase.createdAt)}</div>
           </div>
           <div>
-            <label className="text-sm text-muted-foreground">Product</label>
+            <label className="text-muted-foreground text-sm">Product</label>
             <div>{purchase.productDetails.name}</div>
           </div>
           <div>
-            <label className="text-sm text-muted-foreground">Customer</label>
+            <label className="text-muted-foreground text-sm">Customer</label>
             <div>{user.name}</div>
           </div>
           <div>
-            <label className="text-sm text-muted-foreground">Seller</label>
-            <div>Web Dev Simplified</div>
+            <label className="text-muted-foreground text-sm">Seller</label>
+            <div>Triple A</div>
           </div>
         </CardContent>
-        <CardFooter className="grid grid-cols-2 gap-y-4 gap-x-8 border-t pt-4">
+        <CardFooter className="gap-x-8 gap-y-4 grid grid-cols-2 pt-4 border-t">
           {pricingRows.map(({ label, amountInDollars, isBold }) => (
             <Fragment key={label}>
               <div className={cn(isBold && "font-bold")}>{label}</div>
@@ -132,7 +132,7 @@ async function getPurchase({ userId, id }: { userId: string; id: string }) {
 async function getStripeDetails(
   stripeSessionId: string,
   pricePaidInCents: number,
-  isRefunded: boolean
+  isRefunded: boolean,
 ) {
   const { payment_intent, total_details, amount_total, amount_subtotal } =
     await stripeServerClient.checkout.sessions.retrieve(stripeSessionId, {
@@ -147,8 +147,8 @@ async function getStripeDetails(
     typeof payment_intent?.latest_charge !== "string"
       ? payment_intent?.latest_charge?.amount_refunded
       : isRefunded
-      ? pricePaidInCents
-      : undefined
+        ? pricePaidInCents
+        : undefined
   /** NOTE: refundAmount
    * the first check is to see whether a refund amount is already set.
    * if the refund amount is set, that is refundAmount. If it's not set, then we need to see if isRefunded is true.
@@ -181,7 +181,7 @@ function getPricingRows(
     total,
     subtotal,
     refund,
-  }: { total: number; subtotal: number; refund?: number }
+  }: { total: number; subtotal: number; refund?: number },
 ) {
   /** NOTE:
    * Essentially what this function does is it gets all the details related to pricing like what is the price amount, refund amount, coupon label, percentage etc. Basically all the things related to pricing.

@@ -24,7 +24,7 @@ function Navbar() {
           className="mr-auto text-lg hover:underline px-2 flex items-center"
           href={"/"}
         >
-          Web Dev Simplified
+          TripleA
         </Link>
 
         <SignedIn>
