@@ -13,7 +13,10 @@ export default defineConfig({
     database: env.DB_NAME,
     host: env.DB_HOST,
     port: env.DB_PORT,
-    ssl: false,
+    ssl:
+      env.DB_HOST === "localhost" || env.DB_HOST === "127.0.0.1"
+        ? false
+        : { rejectUnauthorized: false },
   },
 })
 /** NOTE: port
