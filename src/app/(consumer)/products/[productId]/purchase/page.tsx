@@ -3,7 +3,10 @@ import PageHeader from "@/components/PageHeader"
 import { db } from "@/drizzle/db"
 import { ProductTable } from "@/drizzle/schema"
 import { getProductIdTag } from "@/features/products/db/cache"
-import { userOwnsProduct } from "@/features/products/db/products"
+import {
+  userHasAccessToProductCourses,
+  userOwnsProduct,
+} from "@/features/products/db/products"
 import { wherePublicProducts } from "@/features/products/permissions/products"
 import { getCurrentUser } from "@/services/clerk"
 import { StripeCheckoutForm } from "@/services/stripe/components/StripeCheckoutForm"
@@ -41,7 +44,11 @@ async function SuspendedComponent({
   if (product == null) return notFound()
 
   if (user != null) {
-    if (await userOwnsProduct({ userId: user.id, productId })) {
+    const alreadyHasAccess =
+      (await userOwnsProduct({ userId: user.id, productId })) ||
+      (await userHasAccessToProductCourses({ userId: user.id, productId }))
+
+    if (alreadyHasAccess) {
       redirect("/courses")
     }
 

@@ -3,11 +3,13 @@ import {
   CourseProductTable,
   ProductTable,
   PurchaseTable,
+  UserCourseAccessTable,
 } from "@/drizzle/schema"
-import { and, eq, isNull } from "drizzle-orm"
+import { and, eq, inArray, isNull } from "drizzle-orm"
 import { revalidateProductCache } from "./cache"
 import { cacheTag } from "next/dist/server/use-cache/cache-tag"
 import { getPurchaseUserTag } from "@/features/purchases/db/cache"
+import { getUserCourseAccessUserTag } from "@/features/courses/db/cache/userCourseAccess"
 
 export async function userOwnsProduct({
   userId,
@@ -28,6 +30,39 @@ export async function userOwnsProduct({
   })
 
   return existingPurchase != null
+}
+
+export async function userHasAccessToProductCourses({
+  userId,
+  productId,
+}: {
+  userId: string
+  productId: string
+}) {
+  "use cache"
+  cacheTag(getUserCourseAccessUserTag(userId))
+
+  const product = await db.query.ProductTable.findFirst({
+    where: eq(ProductTable.id, productId),
+    columns: {},
+    with: {
+      courseProducts: { columns: { courseId: true } },
+    },
+  })
+
+  if (product == null || product.courseProducts.length === 0) return false
+
+  const accesses = await db.query.UserCourseAccessTable.findMany({
+    where: and(
+      eq(UserCourseAccessTable.userId, userId),
+      inArray(
+        UserCourseAccessTable.courseId,
+        product.courseProducts.map((cp) => cp.courseId)
+      )
+    ),
+  })
+
+  return accesses.length === product.courseProducts.length
 }
 
 export async function insertProduct(
