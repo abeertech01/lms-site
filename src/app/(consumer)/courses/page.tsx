@@ -30,7 +30,7 @@ import { getUserLessonCompleteUserTag } from "@/features/lessons/db/cache/userLe
 import { wherePublicLessons } from "@/features/lessons/permissions/lessons"
 import { formatPlural } from "@/lib/formatters"
 import { getCurrentUser } from "@/services/clerk"
-import { and, countDistinct, eq } from "drizzle-orm"
+import { and, countDistinct, eq, isNotNull } from "drizzle-orm"
 import { cacheTag } from "next/dist/server/use-cache/cache-tag"
 import Link from "next/link"
 import { Suspense } from "react"
@@ -170,6 +170,7 @@ async function getUserCourses(userId: string) {
         eq(UserLessonCompleteTable.userId, userId)
       )
     )
+    .where(isNotNull(UserCourseAccessTable.courseId))
     .orderBy(CourseTable.name)
     .groupBy(CourseTable.id)
 
