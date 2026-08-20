@@ -18,14 +18,26 @@ export async function getCurrentUser({ allData = false } = {}) {
     redirect("/api/clerk/syncUsers")
   }
 
+  const user =
+    allData && sessionClaims?.dbId != null
+      ? await getUser(sessionClaims.dbId)
+      : undefined
+
+  if (userId != null && allData && user == null) {
+    /** NOTE:
+     * The session's dbId points at a row that doesn't exist in this
+     * database (e.g. it was issued against a different environment's
+     * database, such as local dev vs. production). Re-sync instead of
+     * treating the user as signed out.
+     */
+    redirect("/api/clerk/syncUsers")
+  }
+
   return {
     clerkUserId: userId,
     userId: sessionClaims?.dbId,
     role: sessionClaims?.role,
-    user:
-      allData && sessionClaims?.dbId != null
-        ? await getUser(sessionClaims.dbId)
-        : undefined,
+    user,
     redirectToSignIn,
   }
 }
