@@ -72,7 +72,7 @@ async function CourseGrid() {
   }
 
   return courses.map((course) => (
-    <Card key={course.id} className="overflow-hidden">
+    <Card key={course.id} className="overflow-hidden h-full flex flex-col">
       <CardHeader>
         <CardTitle>{course.name}</CardTitle>
         <CardDescription>
