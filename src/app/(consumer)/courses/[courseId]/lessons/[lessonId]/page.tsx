@@ -20,10 +20,14 @@ import { canUpdateUserLessonCompleteStatus } from "@/features/lessons/permission
 import { getCurrentUser } from "@/services/clerk"
 import { and, asc, desc, eq, gt, lt } from "drizzle-orm"
 import { CheckSquare2Icon, LockIcon, XSquareIcon } from "lucide-react"
-import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { cacheTag } from "next/cache"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ReactNode, Suspense } from "react"
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
 
 export default async function LessonPage({
   params,

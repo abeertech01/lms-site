@@ -1,9 +1,13 @@
 import { Button } from "@/components/ui/button"
 import { canAccessAdminPages } from "@/permissions/general"
 import { getCurrentUser } from "@/services/clerk"
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs"
+import { Show, SignInButton, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
 import { ReactNode } from "react"
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
 
 export default function ConsumerLayout({
   children,
@@ -27,7 +31,14 @@ function Navbar() {
           TripleA
         </Link>
 
-        <SignedIn>
+        <Show
+          when="signed-in"
+          fallback={
+            <Button className="self-center" asChild>
+              <SignInButton>Sign In</SignInButton>
+            </Button>
+          }
+        >
           <AdminLink />
           <Link
             href={"/courses"}
@@ -53,14 +64,7 @@ function Navbar() {
               }}
             />
           </div>
-        </SignedIn>
-        <>
-          <SignedOut>
-            <Button className="self-center" asChild>
-              <SignInButton>Sign In</SignInButton>
-            </Button>
-          </SignedOut>
-        </>
+        </Show>
       </nav>
     </header>
   )

@@ -2,9 +2,7 @@ import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   /* NOTE: config options here */
-  experimental: {
-    useCache: true,
-  },
+  cacheComponents: true,
   images: {
     remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
