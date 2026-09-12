@@ -39,7 +39,7 @@ const aj = arcjet({
   ],
 })
 
-export default clerkMiddleware(async (auth, req) => {
+const proxy = clerkMiddleware(async (auth, req) => {
   const decision = await aj.protect(
     env.TEST_IP_ADDRESS
       ? {
@@ -72,6 +72,8 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next({ request: { headers } })
   }
 })
+
+export default proxy
 
 export const config = {
   matcher: [

@@ -10,7 +10,7 @@ import {
 import { getUserCourseAccessUserTag } from "@/features/courses/db/cache/userCourseAccess"
 import { wherePublicCourseSections } from "@/features/courseSections/permissions/sections"
 import { and, eq, or } from "drizzle-orm"
-import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { cacheTag } from "next/cache"
 import { getLessonIdTag } from "../db/cache/lessons"
 
 export function canCreateLessons({ role }: { role: UserRole | undefined }) {

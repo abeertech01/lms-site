@@ -7,7 +7,7 @@ import {
 } from "@/drizzle/schema"
 import { and, eq, inArray, isNull } from "drizzle-orm"
 import { revalidateProductCache } from "./cache"
-import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { cacheTag } from "next/cache"
 import { getPurchaseUserTag } from "@/features/purchases/db/cache"
 import { getUserCourseAccessUserTag } from "@/features/courses/db/cache/userCourseAccess"
 

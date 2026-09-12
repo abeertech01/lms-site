@@ -29,11 +29,15 @@ import { getUserCoupon } from "@/lib/userCountryHeader"
 import { getCurrentUser } from "@/services/clerk"
 import { and, asc, eq } from "drizzle-orm"
 import { VideoIcon } from "lucide-react"
-import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { cacheTag } from "next/cache"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
 
 export default async function ProductPage({
   params,

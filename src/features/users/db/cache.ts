@@ -9,7 +9,10 @@ export function getUserIdTag(id: string) {
   return getIdTag("users", id)
 }
 
+// NOTE: called from the Clerk webhook route handler (and the manual
+// syncUsers route), never from a Server Action, so updateTag()
+// (Server Actions-only) can't be used here.
 export function revalidateUserCache(id: string) {
-  revalidateTag(getUserGlobalTag())
-  revalidateTag(getUserIdTag(id))
+  revalidateTag(getUserGlobalTag(), "max")
+  revalidateTag(getUserIdTag(id), "max")
 }

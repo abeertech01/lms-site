@@ -3,8 +3,12 @@ import { db } from "@/drizzle/db"
 import { CourseTable } from "@/drizzle/schema"
 import { getCourseIdTag } from "@/features/courses/db/cache/courses"
 import { eq } from "drizzle-orm"
-import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { cacheTag } from "next/cache"
 import { notFound } from "next/navigation"
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
 
 export default async function CoursePage({
   params,

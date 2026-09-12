@@ -26,7 +26,9 @@ export async function GET(request: Request) {
 
   await new Promise((res) => setTimeout(res, 100))
 
-  return NextResponse.redirect(request.headers.get("referer") ?? "/")
+  return NextResponse.redirect(
+    new URL(request.headers.get("referer") ?? "/", request.url)
+  )
 }
 /** NOTE: Why it's "new Response" instead of "NextResponse"?
  *  Both work in Next.js route handlers, but there's a subtle difference

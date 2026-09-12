@@ -18,11 +18,15 @@ import { cn } from "@/lib/utils"
 import { getCurrentUser } from "@/services/clerk"
 import { stripeServerClient } from "@/services/stripe/stripeServer"
 import { and, eq } from "drizzle-orm"
-import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { cacheTag } from "next/cache"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Fragment, Suspense } from "react"
 import Stripe from "stripe"
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
 
 export default async function PurchasePage({
   params,

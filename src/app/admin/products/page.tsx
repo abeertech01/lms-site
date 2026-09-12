@@ -1,9 +1,7 @@
-export const dynamic = "force-dynamic"
-
 import PageHeader from "@/components/PageHeader"
 import { Button } from "@/components/ui/button"
 import { db } from "@/drizzle/db"
-import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { cacheTag } from "next/cache"
 import Link from "next/link"
 import {
   CourseProductTable,
@@ -13,6 +11,10 @@ import {
 import { asc, countDistinct, eq } from "drizzle-orm"
 import { getProductGlobalTag } from "@/features/products/db/cache"
 import ProductTable from "@/features/products/components/ProductTable"
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
 
 export default async function ProductsPage() {
   const products = await getProducts()

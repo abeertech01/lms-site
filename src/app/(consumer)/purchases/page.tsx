@@ -9,9 +9,13 @@ import {
 import { getPurchaseUserTag } from "@/features/purchases/db/cache"
 import { getCurrentUser } from "@/services/clerk"
 import { desc, eq } from "drizzle-orm"
-import { cacheTag } from "next/dist/server/use-cache/cache-tag"
+import { cacheTag } from "next/cache"
 import Link from "next/link"
 import { Suspense } from "react"
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false;
 
 export default function PurchasePage() {
   return (
