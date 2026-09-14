@@ -64,6 +64,19 @@ standing instructions to confirm before any `git commit`/`push` in this repo.
   before landing on Clerk's components specifically as the cause). Fixed by wrapping both in
   `<Suspense>`, the standard Cache Components pattern for a component that reads dynamic
   per-request state during SSR.
+  - **Found later via live testing, not the build**: `AdminLink` in `src/app/(consumer)/layout.tsx`
+    calls `getCurrentUser()`, which `redirect()`s to `/api/clerk/syncUsers` for a brand-new user
+    (Clerk session exists, local DB row doesn't yet). `AdminLink` was rendered directly inside
+    `<Show when="signed-in">` with no `<Suspense>` boundary — every other component in the
+    codebase doing this same kind of dynamic auth-dependent read follows a `SuspenseBoundary`
+    naming convention and is wrapped in `<Suspense>` at its call site; this one was the exception,
+    a pre-existing latent bug the build's static generation never exercised. Under Cache
+    Components' stricter streaming, the mid-stream `redirect()` from an un-Suspended dynamic
+    subtree left the client stuck on a stream that never resolved (blank page, permanent
+    "Rendering..." indicator) instead of cleanly redirecting. Fixed by wrapping `<AdminLink />`
+    in `<Suspense fallback={null}>`, matching the existing convention. This is the concrete
+    example of why Phase 7 was "mostly" rather than fully done — the build's static generation
+    doesn't reach every runtime code path a real user session does.
 - **Build/typecheck/lint status**: `npx tsc --noEmit` clean, `npm run lint` clean (0 errors),
   `npm run build` succeeds — all 26 routes generate, Turbopack, cache tags/updateTag calls,
   `<Suspense>` fixes all verified working together.
