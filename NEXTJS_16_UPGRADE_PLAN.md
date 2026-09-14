@@ -88,11 +88,54 @@ standing instructions to confirm before any `git commit`/`push` in this repo.
   deprecation warning that `createRouteMatcher`-based middleware auth is deprecated in favor of
   per-route resource-based auth checks — that's a larger architectural change Clerk is
   recommending for the future, out of scope for this compatibility upgrade.
-- **Not yet done**: Phase 8 (`next typegen` adoption, optional/cosmetic — skipped), and the live
-  manual QA part of Phase 9 (sign-in, purchase flow end-to-end, admin CRUD in a real browser
-  against the dockerized Postgres) — needs a human/browser pass with real Clerk/Stripe test
-  credentials, which wasn't done in this session. **This is the highest-value remaining step**
-  given the `'max'`-profile caching risk flagged above on the purchase flow specifically.
+- **Phase 9 (live manual QA)**: Done by the user in a real browser — new-user sign-up (confirms
+  the `AdminLink` Suspense fix), sign-in, full purchase flow (checkout → "My Courses" updates
+  immediately, no stale-cache issue from the `'max'`-profile change), admin CRUD, marking a
+  lesson complete. All confirmed working.
+- **Deployed**: committed and merged to `main`, live on Vercel. Vercel's Node.js version is set
+  to `24.x`, satisfying Arcjet's `≥24.5` floor.
+- **Not done, optional/low-priority**: Phase 8 (`next typegen` adoption — cosmetic, skipped);
+  removing the remaining `instant = false` opt-outs route-by-route for full Cache Components
+  adoption (see the per-route TODO comments) — deferred, not required for correctness.
+
+## Status: upgrade complete
+
+All required phases verified — build, typecheck, lint, and live manual QA all pass. Deployed to
+production. Remaining items above are optional future cleanup, not blockers.
+
+## Follow-up: general dependency freshness pass
+
+The original ask also included upgrading *other* dependencies generally (not just what Next 16
+strictly required), which hadn't been circled back to. Ran `npm outdated` across the whole
+project and handled each case:
+
+- **Bumped, same major version (safe, via `npm update`)**: `@hookform/resolvers`, all 7
+  `@radix-ui/react-*` packages, `@t3-oss/env-nextjs`, `@tailwindcss/postcss`, `@types/pg`, `pg`,
+  `react-hook-form`, `sonner`, `tailwind-merge`, `tailwindcss`, `tw-animate-css`, `zod`, `stripe`
+  (17.5.0→17.7.0, staying within v17). Verified with a full typecheck/lint/build pass afterward.
+- **Bumped, major version (`lucide-react` 0.536→1.46)**: Checked every one of the 21 icon names
+  this codebase actually imports against Lucide's v1 rename/removal list rather than trusting the
+  changelog summary alone — all 21 survived unchanged. Verified with typecheck (clean), lint
+  (clean, same 8 pre-existing warnings), and a full build (all 26 routes generate).
+- **Deliberately NOT bumped — needs its own dedicated pass, not appropriate to bundle here**:
+  - `stripe` (server SDK) 17→**22**, a 5-major jump. Confirmed real breaking changes exist across
+    that range relevant to this codebase's usage (v22: `Stripe` became a real ES6 class —
+    instantiating without `new` now throws; v21: every `decimal_string` field type changed to
+    `Stripe.Decimal`; v21: webhook helpers now throw on the wrong event kind). This touches live
+    checkout/webhook code on a deployed, revenue-generating app — needs a careful read of each
+    version's migration guide and testing, not a blind bump.
+  - `svix` 1.99→**2.x**. Confirmed a concrete breaking change hitting this codebase directly:
+    `Webhook.verify()` no longer does JSON parsing in v2, but
+    `src/app/api/webhooks/clerk/route.ts` currently does `wh.verify(body, {...}) as WebhookEvent`
+    assuming an already-parsed object back. Bumping without fixing that call site would silently
+    break Clerk webhook signature verification. Svix confirmed v1.x still gets security fixes, so
+    no urgency.
+  - `eslint` 9→10 — unchanged from earlier in this doc: still crashes `eslint-config-next`'s
+    bundled `eslint-plugin-react`.
+  - `@types/node` 24→26 — would describe a Node version ahead of the actual runtime (24.x, per
+    `.nvmrc` and Vercel's project setting). Types should track the real runtime.
+  - `typescript` 5→**7** — TypeScript 7 is the from-scratch Go-based compiler rewrite, a
+    fundamentally different migration than a version bump. Out of scope here.
 
 
 Researched against the official Next.js 16 upgrade guide (nextjs.org, v16.3.5 docs) and this
