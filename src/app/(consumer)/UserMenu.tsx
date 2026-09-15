@@ -42,7 +42,7 @@ export function UserMenu({ isAdmin }: { isAdmin: boolean }) {
             labelIcon={<GraduationCapIcon className="size-4" />}
           />
         )}
-        {isAdmin && (
+        {isMobile && isAdmin && (
           <UserButton.Link
             href="/admin"
             label="Admin"

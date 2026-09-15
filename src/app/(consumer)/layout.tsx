@@ -52,11 +52,9 @@ function Navbar() {
           >
             My Courses
           </Link>
-          <div className="size-8 self-center">
-            <Suspense fallback={null}>
-              <UserMenuWithAdminCheck />
-            </Suspense>
-          </div>
+          <Suspense fallback={null}>
+            <UserMenuWithAdminCheck />
+          </Suspense>
         </Show>
       </nav>
     </header>
@@ -67,5 +65,19 @@ async function UserMenuWithAdminCheck() {
   const user = await getCurrentUser({ allData: true })
   const isAdmin = canAccessAdminPages(user)
 
-  return <UserMenu isAdmin={isAdmin} />
+  return (
+    <>
+      {isAdmin && (
+        <Link
+          href="/admin"
+          className="hidden md:flex hover:bg-accent/10 items-center px-2"
+        >
+          Admin
+        </Link>
+      )}
+      <div className="size-8 self-center">
+        <UserMenu isAdmin={isAdmin} />
+      </div>
+    </>
+  )
 }
