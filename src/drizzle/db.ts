@@ -13,6 +13,9 @@ export const db = drizzle({
     host: env.DB_HOST,
     port: env.DB_PORT,
     ssl: isLocalHost ? false : { rejectUnauthorized: false },
+    // pg.Pool's default is 0 (wait forever) for connectionTimeoutMillis, which turns a bad
+    // connection into a full 300s hang on Vercel instead of a fast, debuggable error.
+    connectionTimeoutMillis: 10_000,
   },
 })
 /** NOTE:
