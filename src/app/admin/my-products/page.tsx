@@ -21,9 +21,9 @@ export default async function ProductsPage() {
 
   return (
     <div className="container my-6">
-      <PageHeader title="Products">
+      <PageHeader title="My Products">
         <Button>
-          <Link href={"/admin/products/new"}>New Product</Link>
+          <Link href={"/admin/my-products/new"}>New Product</Link>
         </Button>
       </PageHeader>
 

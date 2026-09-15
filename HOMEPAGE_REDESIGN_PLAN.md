@@ -56,10 +56,12 @@ filtering or type-handling needed.
   everywhere else already).
 
 ## Order of work
-1. Build `/products` listing page
-2. Rename `/admin/products` → `/admin/my-products`
-3. Add the two new queries
-4. Build `ProductSection` + `HeroSection`
-5. Assemble new home page
-6. QA: empty state (no purchases yet), refund exclusion, mobile layout, cache invalidation after
-   a purchase
+1. ✅ Build `/products` listing page
+2. ✅ Rename `/admin/products` → `/admin/my-products`
+3. ✅ Add the two new queries
+4. ✅ Build `ProductSection` + `HeroSection`
+5. ✅ Assemble new home page
+6. ⬜ QA: empty state (no purchases yet), refund exclusion, mobile layout, cache invalidation after
+   a purchase — not yet verified live
+
+Also done, outside this plan's original scope: a site-wide copyright footer.

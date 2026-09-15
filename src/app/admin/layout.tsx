@@ -38,10 +38,10 @@ function Navbar() {
           Courses
         </Link>
         <Link
-          href={"/admin/products"}
+          href={"/admin/my-products"}
           className="hover:bg-accent/10 flex items-center px-2"
         >
-          Products
+          My Products
         </Link>
         <Link
           href={"/admin/sales"}
