@@ -52,6 +52,12 @@ function Navbar() {
           >
             My Courses
           </Link>
+          <Link
+            href={"/purchases"}
+            className="hidden md:flex hover:bg-accent/10 items-center px-2"
+          >
+            Purchases History
+          </Link>
           <Suspense fallback={null}>
             <UserMenuWithAdminCheck />
           </Suspense>
