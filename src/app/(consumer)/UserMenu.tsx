@@ -49,11 +49,13 @@ export function UserMenu({ isAdmin }: { isAdmin: boolean }) {
             labelIcon={<ShieldIcon className="size-4" />}
           />
         )}
-        <UserButton.Link
-          href="/purchases"
-          label="Purchases History"
-          labelIcon={<ReceiptIcon className="size-4" />}
-        />
+        {isMobile && (
+          <UserButton.Link
+            href="/purchases"
+            label="Purchases History"
+            labelIcon={<ReceiptIcon className="size-4" />}
+          />
+        )}
       </UserButton.MenuItems>
     </UserButton>
   )
