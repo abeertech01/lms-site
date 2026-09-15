@@ -35,8 +35,8 @@ export default async function CoursePageLayout({
   if (course == null) return notFound()
 
   return (
-    <div className="grid grid-cols-[300px_1fr] gap-8 container">
-      <div className="py-4">
+    <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-8 container">
+      <div className="py-4 min-w-0">
         <div className="text-lg font-semibold">{course.name}</div>
         <Suspense
           fallback={<CoursePageClient course={mapCourse(course, [])} />}
@@ -44,7 +44,7 @@ export default async function CoursePageLayout({
           <SuspenseBoundary course={course} />
         </Suspense>
       </div>
-      <div className="py-4">{children}</div>
+      <div className="py-4 min-w-0">{children}</div>
     </div>
   )
 }

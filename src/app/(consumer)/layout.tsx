@@ -42,13 +42,13 @@ function Navbar() {
         >
           <Link
             href={"/products"}
-            className="hover:bg-accent/10 flex items-center px-2"
+            className="hidden md:flex hover:bg-accent/10 items-center px-2"
           >
             All Products
           </Link>
           <Link
             href={"/courses"}
-            className="hover:bg-accent/10 flex items-center px-2"
+            className="hidden md:flex hover:bg-accent/10 items-center px-2"
           >
             My Courses
           </Link>

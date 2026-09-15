@@ -75,8 +75,26 @@ async function SuspenseBoundary({
   )
 
   return (
-    <div className="my-4 flex flex-col gap-4">
-      <div className="aspect-video">
+    // Mobile: title+description, then video, then buttons, each its own row.
+    // Desktop: original layout — video, then a title/buttons row, then description.
+    // Grid areas let each block render once and just get regrouped per breakpoint,
+    // instead of duplicating the Previous/Next lookups (real DB queries) per viewport.
+    <div
+      className="my-4 grid items-start gap-4 [grid-template-areas:'title'_'description'_'video'_'buttons'] md:grid-cols-[1fr_auto] md:[grid-template-areas:'video_video'_'title_buttons'_'description_description']"
+    >
+      <h1 className="[grid-area:title] text-2xl font-semibold">
+        {lesson.name}
+      </h1>
+
+      <div className="[grid-area:description]">
+        {canView ? (
+          lesson.description && <p>{lesson.description}</p>
+        ) : (
+          <p>This lesson is locked. Please purchase the course to view it.</p>
+        )}
+      </div>
+
+      <div className="[grid-area:video] aspect-video">
         {canView ? (
           <YouTubeVideoPlayer
             videoId={lesson.youtubeVideoId}
@@ -92,57 +110,48 @@ async function SuspenseBoundary({
           </div>
         )}
       </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between items-start gap-4">
-          <h1 className="text-2xl font-semibold">{lesson.name}</h1>
-          <div className="flex gap-2 justify-end">
-            <Suspense fallback={<SkeletonButton />}>
-              <ToLessonButton
-                lesson={lesson}
-                courseId={courseId}
-                lessonFunc={getPreviousLesson}
-              >
-                Previous
-              </ToLessonButton>
-            </Suspense>
-            {canUpdateCompletionStatus && (
-              <ActionButton
-                action={updateLessonCompleteStatus.bind(
-                  null,
-                  lesson.id,
-                  !isLessonComplete
-                )}
-                variant={"outline"}
-              >
-                <div className="flex gap-2 items-center">
-                  {isLessonComplete ? (
-                    <>
-                      <CheckSquare2Icon /> Mark Incomplete
-                    </>
-                  ) : (
-                    <>
-                      <XSquareIcon /> Mark Complete
-                    </>
-                  )}
-                </div>
-              </ActionButton>
+
+      <div className="[grid-area:buttons] flex gap-2 flex-wrap">
+        <Suspense fallback={<SkeletonButton />}>
+          <ToLessonButton
+            lesson={lesson}
+            courseId={courseId}
+            lessonFunc={getPreviousLesson}
+          >
+            Previous
+          </ToLessonButton>
+        </Suspense>
+        {canUpdateCompletionStatus && (
+          <ActionButton
+            action={updateLessonCompleteStatus.bind(
+              null,
+              lesson.id,
+              !isLessonComplete
             )}
-            <Suspense fallback={<SkeletonButton />}>
-              <ToLessonButton
-                lesson={lesson}
-                courseId={courseId}
-                lessonFunc={getNextLesson}
-              >
-                Next
-              </ToLessonButton>
-            </Suspense>
-          </div>
-        </div>
-        {canView ? (
-          lesson.description && <p>{lesson.description}</p>
-        ) : (
-          <p>This lesson is locked. Please purchase the course to view it.</p>
+            variant={"outline"}
+          >
+            <div className="flex gap-2 items-center">
+              {isLessonComplete ? (
+                <>
+                  <CheckSquare2Icon /> Mark Incomplete
+                </>
+              ) : (
+                <>
+                  <XSquareIcon /> Mark Complete
+                </>
+              )}
+            </div>
+          </ActionButton>
         )}
+        <Suspense fallback={<SkeletonButton />}>
+          <ToLessonButton
+            lesson={lesson}
+            courseId={courseId}
+            lessonFunc={getNextLesson}
+          >
+            Next
+          </ToLessonButton>
+        </Suspense>
       </div>
     </div>
   )
