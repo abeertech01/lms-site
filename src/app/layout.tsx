@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import "./globals.css"
 import { ClerkProvider } from "@clerk/nextjs"
+import { Footer } from "@/components/Footer"
 import { Toaster } from "@/components/ui/sonner"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
@@ -21,7 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased">
         <ClerkProvider>
-          {children}
+          <div className="flex flex-col min-h-screen">
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </div>
           <Toaster richColors={false} />
         </ClerkProvider>
       </body>

@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button"
 import { canAccessAdminPages } from "@/permissions/general"
 import { getCurrentUser } from "@/services/clerk"
-import { Show, SignInButton, UserButton } from "@clerk/nextjs"
+import { Show, SignInButton } from "@clerk/nextjs"
 import Link from "next/link"
 import { ReactNode, Suspense } from "react"
+import { UserMenu } from "./UserMenu"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
@@ -39,32 +40,22 @@ function Navbar() {
             </Button>
           }
         >
-          <Suspense fallback={null}>
-            <AdminLink />
-          </Suspense>
+          <Link
+            href={"/products"}
+            className="hidden md:flex hover:bg-accent/10 items-center px-2"
+          >
+            All Products
+          </Link>
           <Link
             href={"/courses"}
-            className="hover:bg-accent/10 flex items-center px-2"
+            className="hidden md:flex hover:bg-accent/10 items-center px-2"
           >
             My Courses
           </Link>
-          <Link
-            href={"/purchases"}
-            className="hover:bg-accent/10 flex items-center px-2"
-          >
-            Purchases History
-          </Link>
           <div className="size-8 self-center">
-            <UserButton
-              appearance={{
-                elements: {
-                  userButtonAvatarBox: {
-                    width: "100%",
-                    height: "100%",
-                  },
-                },
-              }}
-            />
+            <Suspense fallback={null}>
+              <UserMenuWithAdminCheck />
+            </Suspense>
           </div>
         </Show>
       </nav>
@@ -72,14 +63,9 @@ function Navbar() {
   )
 }
 
-async function AdminLink() {
+async function UserMenuWithAdminCheck() {
   const user = await getCurrentUser({ allData: true })
-  console.log(user.user?.name)
-  if (!canAccessAdminPages(user)) return null
+  const isAdmin = canAccessAdminPages(user)
 
-  return (
-    <Link href={"/admin"} className="hover:bg-accent/10 flex items-center px-2">
-      Admin
-    </Link>
-  )
+  return <UserMenu isAdmin={isAdmin} />
 }

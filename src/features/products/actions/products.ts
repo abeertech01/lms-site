@@ -24,7 +24,7 @@ export async function createProduct(unsafeData: z.infer<typeof productSchema>) {
 
   await insertProduct(data)
 
-  redirect("/admin/products")
+  redirect("/admin/my-products")
 }
 
 export async function updateProduct(
@@ -38,7 +38,7 @@ export async function updateProduct(
   }
 
   await updateProductDb(id, data)
-  redirect("/admin/products")
+  redirect("/admin/my-products")
 }
 
 export async function deleteProduct(id: string) {

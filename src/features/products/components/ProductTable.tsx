@@ -78,7 +78,7 @@ export default function ProductTable({
             <TableCell>
               <div className="flex gap-2">
                 <Button asChild>
-                  <Link href={`/admin/products/${product.id}/edit`}>Edit</Link>
+                  <Link href={`/admin/my-products/${product.id}/edit`}>Edit</Link>
                 </Button>
                 {/** NOTE:
                  * action={deleteProduct.bind(null, product.id)}
