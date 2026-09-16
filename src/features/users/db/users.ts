@@ -1,7 +1,22 @@
 import { db } from "@/drizzle/db"
 import { UserTable } from "@/drizzle/schema"
 import { eq } from "drizzle-orm"
-import { revalidateUserCache } from "./cache"
+import { cacheTag } from "next/cache"
+import { getUserGlobalTag, revalidateUserCache } from "./cache"
+
+// NOTE: this is a single-instructor platform (one "admin" user), so the
+// admin's own profile doubles as the course author shown on product cards.
+// If multiple instructors are ever supported, this should be replaced by a
+// real per-course/product author relation instead.
+export async function getSiteAuthor() {
+  "use cache"
+  cacheTag(getUserGlobalTag())
+
+  return db.query.UserTable.findFirst({
+    where: eq(UserTable.role, "admin"),
+    columns: { name: true, imageUrl: true },
+  })
+}
 
 /** NOTE:
  * "use cache"

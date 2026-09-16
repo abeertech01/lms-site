@@ -19,11 +19,11 @@ import {
 import { canUpdateUserLessonCompleteStatus } from "@/features/lessons/permissions/userLessonComplete"
 import { getCurrentUser } from "@/services/clerk"
 import { and, asc, desc, eq, gt, lt } from "drizzle-orm"
-import { CheckSquare2Icon, LockIcon, XSquareIcon } from "lucide-react"
+import { CheckCircle2Icon, CircleIcon, LockIcon } from "lucide-react"
 import { cacheTag } from "next/cache"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ReactNode, Suspense } from "react"
+import { ComponentProps, ReactNode, Suspense } from "react"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
@@ -75,26 +75,56 @@ async function SuspenseBoundary({
   )
 
   return (
-    // Mobile: title+description, then video, then buttons, each its own row.
-    // Desktop: original layout — video, then a title/buttons row, then description.
+    // Mobile: title, complete-toggle, description, video, nav — each its own row.
+    // Desktop: video, then a title/complete-toggle row, then description, then nav.
     // Grid areas let each block render once and just get regrouped per breakpoint,
     // instead of duplicating the Previous/Next lookups (real DB queries) per viewport.
     <div
-      className="my-4 grid items-start gap-4 [grid-template-areas:'title'_'description'_'video'_'buttons'] md:grid-cols-[1fr_auto] md:[grid-template-areas:'video_video'_'title_buttons'_'description_description']"
+      className="my-4 grid items-start gap-4 [grid-template-areas:'title'_'complete'_'description'_'video'_'nav'] md:grid-cols-[1fr_auto] md:[grid-template-areas:'video_video'_'title_complete'_'description_description'_'nav_nav']"
     >
       <h1 className="[grid-area:title] text-2xl font-semibold">
         {lesson.name}
       </h1>
 
+      <div className="[grid-area:complete] flex items-center self-center">
+        {canUpdateCompletionStatus && (
+          <ActionButton
+            action={updateLessonCompleteStatus.bind(
+              null,
+              lesson.id,
+              !isLessonComplete
+            )}
+            variant={"ghost"}
+            className="group gap-2 px-3 text-muted-foreground hover:bg-violet-600 hover:text-white"
+          >
+            <span className="flex items-center gap-2">
+              {isLessonComplete ? (
+                <CheckCircle2Icon className="size-5 text-violet-600 group-hover:text-white" />
+              ) : (
+                <CircleIcon className="size-5 text-violet-600 group-hover:text-white" />
+              )}
+              {isLessonComplete ? "Completed" : "Mark as complete"}
+            </span>
+          </ActionButton>
+        )}
+      </div>
+
       <div className="[grid-area:description]">
         {canView ? (
-          lesson.description && <p>{lesson.description}</p>
+          lesson.description && (
+            <>
+              <div className="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                Description
+              </div>
+              <p>{lesson.description}</p>
+            </>
+          )
         ) : (
           <p>This lesson is locked. Please purchase the course to view it.</p>
         )}
       </div>
 
-      <div className="[grid-area:video] aspect-video">
+      <div className="[grid-area:video] aspect-video overflow-hidden rounded-lg">
         {canView ? (
           <YouTubeVideoPlayer
             videoId={lesson.youtubeVideoId}
@@ -111,7 +141,7 @@ async function SuspenseBoundary({
         )}
       </div>
 
-      <div className="[grid-area:buttons] flex gap-2 flex-wrap">
+      <div className="[grid-area:nav] flex flex-wrap justify-end gap-2">
         <Suspense fallback={<SkeletonButton />}>
           <ToLessonButton
             lesson={lesson}
@@ -121,35 +151,15 @@ async function SuspenseBoundary({
             Previous
           </ToLessonButton>
         </Suspense>
-        {canUpdateCompletionStatus && (
-          <ActionButton
-            action={updateLessonCompleteStatus.bind(
-              null,
-              lesson.id,
-              !isLessonComplete
-            )}
-            variant={"outline"}
-          >
-            <div className="flex gap-2 items-center">
-              {isLessonComplete ? (
-                <>
-                  <CheckSquare2Icon /> Mark Incomplete
-                </>
-              ) : (
-                <>
-                  <XSquareIcon /> Mark Complete
-                </>
-              )}
-            </div>
-          </ActionButton>
-        )}
         <Suspense fallback={<SkeletonButton />}>
           <ToLessonButton
             lesson={lesson}
             courseId={courseId}
             lessonFunc={getNextLesson}
+            variant="default"
+            className="bg-violet-600 hover:bg-violet-600/90"
           >
-            Next
+            Next lesson
           </ToLessonButton>
         </Suspense>
       </div>
@@ -162,6 +172,8 @@ async function ToLessonButton({
   courseId,
   lesson,
   lessonFunc,
+  variant = "outline",
+  className,
 }: {
   children: ReactNode
   courseId: string
@@ -175,12 +187,14 @@ async function ToLessonButton({
     sectionId: string
     order: number
   }) => Promise<{ id: string } | undefined>
+  variant?: ComponentProps<typeof Button>["variant"]
+  className?: string
 }) {
   const toLesson = await lessonFunc(lesson)
   if (toLesson == null) return null
 
   return (
-    <Button variant={"outline"} asChild>
+    <Button variant={variant} className={className} asChild>
       <Link href={`/courses/${courseId}/lessons/${toLesson.id}`}>
         {children}
       </Link>
