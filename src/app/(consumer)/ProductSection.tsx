@@ -15,6 +15,7 @@ type Product = {
   description: string
   priceInDollars: number
   imageUrl: string
+  lessonsCount: number
 }
 
 export function ProductSection({
@@ -65,15 +66,23 @@ function SkeletonProductCard() {
         <CardDescription>
           <SkeletonText className="w-1/4" />
         </CardDescription>
-        <CardTitle>
-          <SkeletonText className="w-3/4" />
-        </CardTitle>
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle className="w-3/4">
+            <SkeletonText className="w-3/4" />
+          </CardTitle>
+          <SkeletonText className="w-16 shrink-0" />
+        </div>
       </CardHeader>
       <CardContent>
         <SkeletonText rows={2} />
       </CardContent>
-      <CardFooter className="mt-auto">
-        <SkeletonButton className="w-full" />
+      <div className="mx-6 border-t" />
+      <CardFooter className="mt-auto flex items-center justify-between gap-4 pt-4">
+        <div className="flex items-center gap-2">
+          <div className="size-8 shrink-0 rounded-full bg-secondary animate-pulse" />
+          <SkeletonText className="w-20" />
+        </div>
+        <SkeletonButton />
       </CardFooter>
     </Card>
   )

@@ -1,9 +1,16 @@
 import { db } from "@/drizzle/db"
-import { ProductTable } from "@/drizzle/schema"
+import {
+  CourseProductTable,
+  CourseSectionTable,
+  LessonTable,
+  ProductTable,
+} from "@/drizzle/schema"
 import { ProductCard } from "@/features/products/components/ProductCard"
 import { getProductGlobalTag } from "@/features/products/db/cache"
+import { getCourseSectionGlobalTag } from "@/features/courseSections/db/cache"
+import { getLessonGlobalTag } from "@/features/lessons/db/cache/lessons"
 import { wherePublicProducts } from "@/features/products/permissions/products"
-import { asc } from "drizzle-orm"
+import { asc, countDistinct, eq } from "drizzle-orm"
 import { cacheTag } from "next/cache"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
@@ -26,17 +33,32 @@ export default async function ProductsPage() {
 
 async function getPublicProducts() {
   "use cache"
-  cacheTag(getProductGlobalTag())
+  cacheTag(
+    getProductGlobalTag(),
+    getCourseSectionGlobalTag(),
+    getLessonGlobalTag()
+  )
 
-  return db.query.ProductTable.findMany({
-    columns: {
-      id: true,
-      name: true,
-      description: true,
-      priceInDollars: true,
-      imageUrl: true,
-    },
-    where: wherePublicProducts,
-    orderBy: asc(ProductTable.name),
-  })
+  return db
+    .select({
+      id: ProductTable.id,
+      name: ProductTable.name,
+      description: ProductTable.description,
+      priceInDollars: ProductTable.priceInDollars,
+      imageUrl: ProductTable.imageUrl,
+      lessonsCount: countDistinct(LessonTable),
+    })
+    .from(ProductTable)
+    .leftJoin(
+      CourseProductTable,
+      eq(CourseProductTable.productId, ProductTable.id)
+    )
+    .leftJoin(
+      CourseSectionTable,
+      eq(CourseSectionTable.courseId, CourseProductTable.courseId)
+    )
+    .leftJoin(LessonTable, eq(LessonTable.sectionId, CourseSectionTable.id))
+    .where(wherePublicProducts)
+    .groupBy(ProductTable.id)
+    .orderBy(asc(ProductTable.name))
 }

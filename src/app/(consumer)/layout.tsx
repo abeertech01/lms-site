@@ -2,13 +2,14 @@ import { Button } from "@/components/ui/button"
 import { canAccessAdminPages } from "@/permissions/general"
 import { getCurrentUser } from "@/services/clerk"
 import { Show, SignInButton } from "@clerk/nextjs"
+import Image from "next/image"
 import Link from "next/link"
 import { ReactNode, Suspense } from "react"
 import { UserMenu } from "./UserMenu"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+export const instant = false
 
 export default function ConsumerLayout({
   children,
@@ -23,13 +24,17 @@ export default function ConsumerLayout({
 
 function Navbar() {
   return (
-    <header className="flex h-12 shadow bg-background z-10">
+    <header className="z-10 flex bg-background shadow h-12">
       <nav className="flex gap-4 container">
-        <Link
-          className="mr-auto text-lg hover:underline px-2 flex items-center"
-          href={"/"}
-        >
-          TripleA
+        <Link className="flex items-center mr-auto px-2" href={"/"}>
+          <Image
+            src="/triplea-logo.png"
+            alt="TripleA"
+            width={160}
+            height={80}
+            className="w-auto h-full"
+            priority
+          />
         </Link>
 
         <Show
@@ -42,19 +47,19 @@ function Navbar() {
         >
           <Link
             href={"/products"}
-            className="hidden md:flex hover:bg-accent/10 items-center px-2"
+            className="hidden md:flex items-center hover:bg-accent/10 px-2"
           >
             All Products
           </Link>
           <Link
             href={"/courses"}
-            className="hidden md:flex hover:bg-accent/10 items-center px-2"
+            className="hidden md:flex items-center hover:bg-accent/10 px-2"
           >
             My Courses
           </Link>
           <Link
             href={"/purchases"}
-            className="hidden md:flex hover:bg-accent/10 items-center px-2"
+            className="hidden md:flex items-center hover:bg-accent/10 px-2"
           >
             Purchases History
           </Link>
@@ -76,12 +81,12 @@ async function UserMenuWithAdminCheck() {
       {isAdmin && (
         <Link
           href="/admin"
-          className="hidden md:flex hover:bg-accent/10 items-center px-2"
+          className="hidden md:flex items-center hover:bg-accent/10 px-2"
         >
           Admin
         </Link>
       )}
-      <div className="size-8 self-center">
+      <div className="self-center size-8">
         <UserMenu isAdmin={isAdmin} />
       </div>
     </>

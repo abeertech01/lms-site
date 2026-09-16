@@ -1,11 +1,13 @@
 import { db } from "@/drizzle/db"
 import {
   CourseProductTable,
+  CourseSectionTable,
+  LessonTable,
   ProductTable,
   PurchaseTable,
   UserCourseAccessTable,
 } from "@/drizzle/schema"
-import { and, count, desc, eq, inArray, isNull } from "drizzle-orm"
+import { and, countDistinct, desc, eq, inArray, isNull } from "drizzle-orm"
 import { getProductGlobalTag, revalidateProductCache } from "./cache"
 import { cacheTag } from "next/cache"
 import {
@@ -13,6 +15,8 @@ import {
   getPurchaseUserTag,
 } from "@/features/purchases/db/cache"
 import { getUserCourseAccessUserTag } from "@/features/courses/db/cache/userCourseAccess"
+import { getCourseSectionGlobalTag } from "@/features/courseSections/db/cache"
+import { getLessonGlobalTag } from "@/features/lessons/db/cache/lessons"
 import { wherePublicProducts } from "../permissions/products"
 
 export async function userOwnsProduct({
@@ -76,7 +80,12 @@ export async function userHasAccessToProductCourses({
 // with the purchase tag too so a new sale can invalidate the ranking.
 export async function getMostPurchasedProducts(limit = 4) {
   "use cache"
-  cacheTag(getProductGlobalTag(), getPurchaseGlobalTag())
+  cacheTag(
+    getProductGlobalTag(),
+    getPurchaseGlobalTag(),
+    getCourseSectionGlobalTag(),
+    getLessonGlobalTag()
+  )
 
   return db
     .select({
@@ -85,6 +94,7 @@ export async function getMostPurchasedProducts(limit = 4) {
       description: ProductTable.description,
       priceInDollars: ProductTable.priceInDollars,
       imageUrl: ProductTable.imageUrl,
+      lessonsCount: countDistinct(LessonTable),
     })
     .from(ProductTable)
     .leftJoin(
@@ -94,28 +104,52 @@ export async function getMostPurchasedProducts(limit = 4) {
         isNull(PurchaseTable.refundedAt)
       )
     )
+    .leftJoin(
+      CourseProductTable,
+      eq(CourseProductTable.productId, ProductTable.id)
+    )
+    .leftJoin(
+      CourseSectionTable,
+      eq(CourseSectionTable.courseId, CourseProductTable.courseId)
+    )
+    .leftJoin(LessonTable, eq(LessonTable.sectionId, CourseSectionTable.id))
     .where(wherePublicProducts)
     .groupBy(ProductTable.id)
-    .orderBy(desc(count(PurchaseTable.id)))
+    .orderBy(desc(countDistinct(PurchaseTable.id)))
     .limit(limit)
 }
 
 export async function getLatestProducts(limit = 4) {
   "use cache"
-  cacheTag(getProductGlobalTag())
+  cacheTag(
+    getProductGlobalTag(),
+    getCourseSectionGlobalTag(),
+    getLessonGlobalTag()
+  )
 
-  return db.query.ProductTable.findMany({
-    columns: {
-      id: true,
-      name: true,
-      description: true,
-      priceInDollars: true,
-      imageUrl: true,
-    },
-    where: wherePublicProducts,
-    orderBy: desc(ProductTable.createdAt),
-    limit,
-  })
+  return db
+    .select({
+      id: ProductTable.id,
+      name: ProductTable.name,
+      description: ProductTable.description,
+      priceInDollars: ProductTable.priceInDollars,
+      imageUrl: ProductTable.imageUrl,
+      lessonsCount: countDistinct(LessonTable),
+    })
+    .from(ProductTable)
+    .leftJoin(
+      CourseProductTable,
+      eq(CourseProductTable.productId, ProductTable.id)
+    )
+    .leftJoin(
+      CourseSectionTable,
+      eq(CourseSectionTable.courseId, CourseProductTable.courseId)
+    )
+    .leftJoin(LessonTable, eq(LessonTable.sectionId, CourseSectionTable.id))
+    .where(wherePublicProducts)
+    .groupBy(ProductTable.id)
+    .orderBy(desc(ProductTable.createdAt))
+    .limit(limit)
 }
 
 export async function insertProduct(
