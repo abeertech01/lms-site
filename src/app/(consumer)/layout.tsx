@@ -24,17 +24,19 @@ export default function ConsumerLayout({
 
 function Navbar() {
   return (
-    <header className="z-10 flex bg-background shadow h-12">
+    <header className="sticky top-0 z-10 flex bg-background shadow h-12">
       <nav className="flex gap-4 container">
         <Link className="flex items-center mr-auto px-2" href={"/"}>
-          <Image
-            src="/triplea-logo.png"
-            alt="TripleA"
-            width={160}
-            height={80}
-            className="w-auto h-full"
-            priority
-          />
+          <div className="flex items-center bg-violet-100 rounded-lg">
+            <Image
+              src="/triplea-logo.png"
+              alt="TripleA"
+              width={160}
+              height={80}
+              className="w-auto h-10"
+              priority
+            />
+          </div>
         </Link>
 
         <Show

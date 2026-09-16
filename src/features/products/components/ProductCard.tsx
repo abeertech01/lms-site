@@ -8,14 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { getSiteAuthor } from "@/features/users/db/users"
 import { formatPrice } from "@/lib/formatters"
 import { getUserCoupon } from "@/lib/userCountryHeader"
 import Image from "next/image"
 import Link from "next/link"
 import { Suspense } from "react"
-
-// TODO: replace with real per-course author data once the schema supports it
-const AUTHOR_NAME = "Abdul Ahad"
 
 export function ProductCard({
   id,
@@ -33,7 +31,7 @@ export function ProductCard({
   lessonsCount: number
 }) {
   return (
-    <Card className="overflow-hidden flex flex-col w-full max-w-[500px] mx-auto">
+    <Card className="overflow-hidden flex flex-col w-full max-w-125 mx-auto">
       <div className="relative aspect-video w-full">
         <Image src={imageUrl} alt={name} fill className="object-cover" />
       </div>
@@ -56,12 +54,9 @@ export function ProductCard({
       </CardContent>
       <div className="mx-6 border-t" />
       <CardFooter className="mt-auto flex items-center justify-between gap-4 pt-4">
-        <div className="flex min-w-0 items-center gap-2">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
-            {getInitials(AUTHOR_NAME)}
-          </div>
-          <span className="truncate text-sm font-medium">{AUTHOR_NAME}</span>
-        </div>
+        <Suspense fallback={<AuthorSkeleton />}>
+          <Author />
+        </Suspense>
         <Button
           variant="outline"
           className="border-2 border-violet-600 text-violet-600 hover:bg-violet-600 hover:text-white"
@@ -80,6 +75,39 @@ function getInitials(name: string) {
     .map(part => part[0])
     .join("")
     .toUpperCase()
+}
+
+async function Author() {
+  const author = await getSiteAuthor()
+  const name = author?.name ?? "Instructor"
+
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      {author?.imageUrl ? (
+        <Image
+          src={author.imageUrl}
+          alt={name}
+          width={32}
+          height={32}
+          className="size-8 shrink-0 rounded-full border object-cover"
+        />
+      ) : (
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
+          {getInitials(name)}
+        </div>
+      )}
+      <span className="truncate text-sm font-medium">{name}</span>
+    </div>
+  )
+}
+
+function AuthorSkeleton() {
+  return (
+    <div className="flex items-center gap-2">
+      <div className="size-8 shrink-0 animate-pulse rounded-full bg-secondary" />
+      <div className="h-3 w-20 animate-pulse rounded-sm bg-secondary" />
+    </div>
+  )
 }
 
 async function Price({ price }: { price: number }) {

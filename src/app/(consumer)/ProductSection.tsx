@@ -60,7 +60,7 @@ export function ProductSectionSkeleton({
 
 function SkeletonProductCard() {
   return (
-    <Card className="overflow-hidden flex flex-col w-full max-w-[500px] mx-auto">
+    <Card className="overflow-hidden flex flex-col w-full max-w-125 mx-auto">
       <div className="relative aspect-video w-full bg-secondary animate-pulse" />
       <CardHeader className="space-y-0">
         <CardDescription>

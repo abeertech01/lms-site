@@ -23,18 +23,20 @@ export default function AdminLayout({
 
 function Navbar() {
   return (
-    <header className="z-10 flex bg-background shadow h-12">
+    <header className="sticky top-0 z-10 flex bg-background shadow h-12">
       <nav className="flex gap-4 container">
         <div className="flex items-center gap-2 mr-auto">
           <Link className="flex items-center" href={"/"}>
-            <Image
-              src="/triplea-logo.png"
-              alt="TripleA"
-              width={160}
-              height={80}
-              className="border w-auto h-6"
-              priority
-            />
+            <div className="flex items-center rounded-lg bg-violet-100 px-3 py-1.5">
+              <Image
+                src="/triplea-logo.png"
+                alt="TripleA"
+                width={160}
+                height={80}
+                className="w-auto h-6"
+                priority
+              />
+            </div>
           </Link>
           <Badge>Admin</Badge>
         </div>
