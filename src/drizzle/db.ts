@@ -16,6 +16,14 @@ export const db = drizzle({
     // pg.Pool's default is 0 (wait forever) for connectionTimeoutMillis, which turns a bad
     // connection into a full 300s hang on Vercel instead of a fast, debuggable error.
     connectionTimeoutMillis: 10_000,
+    // Without this, a query on a connection the DB provider silently dropped while idle
+    // (common on serverless) hangs until Vercel's 300s function timeout kills it instead
+    // of failing fast.
+    query_timeout: 15_000,
+    // Recycle idle pool clients before the DB provider has a chance to drop them itself,
+    // and keep the TCP socket alive so a dead connection is detected sooner.
+    idleTimeoutMillis: 10_000,
+    keepAlive: true,
   },
 })
 /** NOTE:
