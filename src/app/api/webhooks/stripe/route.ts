@@ -49,18 +49,25 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const event = await stripeServerClient.webhooks.constructEvent(
-    await request.text(),
-    request.headers.get("stripe-signature") as string,
-    env.STRIPE_WEBHOOK_SECRET
-  )
+  let event: Stripe.Event
+  try {
+    event = await stripeServerClient.webhooks.constructEvent(
+      await request.text(),
+      request.headers.get("stripe-signature") as string,
+      env.STRIPE_WEBHOOK_SECRET
+    )
+  } catch (error) {
+    console.error("Stripe webhook: signature verification failed", error)
+    return new Response(null, { status: 400 })
+  }
 
   switch (event.type) {
     case "checkout.session.completed":
     case "checkout.session.async_payment_succeeded": {
       try {
         await processStripeCheckout(event.data.object)
-      } catch {
+      } catch (error) {
+        console.error("Stripe webhook: failed to process checkout", error)
         return new Response(null, { status: 500 })
       }
     }

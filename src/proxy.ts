@@ -29,7 +29,13 @@ const aj = arcjet({
     }),
     detectBot({
       mode: "LIVE",
-      allow: ["CATEGORY:SEARCH_ENGINE", "CATEGORY:MONITOR", "CATEGORY:PREVIEW"],
+      // NOTE: CATEGORY:WEBHOOK lets Stripe/Clerk (Svix) webhook senders through, otherwise they get a 403. The routes verify the webhook signature themselves.
+      allow: [
+        "CATEGORY:SEARCH_ENGINE",
+        "CATEGORY:MONITOR",
+        "CATEGORY:PREVIEW",
+        "CATEGORY:WEBHOOK",
+      ],
     }),
     slidingWindow({
       mode: "LIVE",
