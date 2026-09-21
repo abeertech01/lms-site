@@ -13,11 +13,11 @@ export function getPurchaseUserTag(userId: string) {
   return getUserTag("purchases", userId)
 }
 
-// NOTE: called from both the Stripe webhook route handler and a Server
-// Action, so updateTag() (Server Actions-only) can't be used here. `'max'`
-// gives the longest stale-while-revalidate window; if the purchase/"My
-// Courses" pages show stale data right after checkout, that's the tradeoff
-// to revisit (see NEXTJS_16_UPGRADE_PLAN.md, Phase 5).
+// NOTE: called from both the Stripe route handler and a Server Action, so
+// updateTag() (Server Actions-only) can't be used here. `{ expire: 0 }`
+// expires the data immediately (no stale-while-revalidate), so the user
+// lands on fresh data right after checkout. `'max'` served stale "My
+// Courses" once after a purchase.
 export function revalidatePurchaseCache({
   id,
   userId,
@@ -25,7 +25,7 @@ export function revalidatePurchaseCache({
   id: string
   userId: string
 }) {
-  revalidateTag(getPurchaseGlobalTag(), "max")
-  revalidateTag(getPurchaseIdTag(id), "max")
-  revalidateTag(getPurchaseUserTag(userId), "max")
+  revalidateTag(getPurchaseGlobalTag(), { expire: 0 })
+  revalidateTag(getPurchaseIdTag(id), { expire: 0 })
+  revalidateTag(getPurchaseUserTag(userId), { expire: 0 })
 }

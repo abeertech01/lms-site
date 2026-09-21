@@ -35,10 +35,11 @@ standing instructions to confirm before any `git commit`/`push` in this repo.
     `revalidateLessonCache`, `revalidateUserLessonCompleteCache` — called **only** from Server
     Actions with an immediate redirect → switched to **`updateTag`** (true read-your-writes).
   - `revalidatePurchaseCache`, `revalidateUserCourseAccessCache` — called from **both** a
-    Server Action **and** the Stripe webhook route handler → kept **`revalidateTag(tag, 'max')`**
-    (`updateTag` is Server-Actions-only, would break in the webhook). Left an inline code comment
-    flagging this as the thing to watch if the purchase/"My Courses" flow shows stale data —
-    `'max'` is stale-while-revalidate, not the old immediate-invalidation behavior.
+    Server Action **and** the Stripe route handler, so `updateTag` (Server-Actions-only) can't be
+    used. Initially set to `revalidateTag(tag, 'max')`, but that's stale-while-revalidate and
+    "My Courses" showed stale data once right after a purchase (found on a later local re-test,
+    see the Phase 9 note below). **Now `revalidateTag(tag, { expire: 0 })`** — expires the data
+    immediately, so the new course shows up at once.
   - `revalidateUserCache` — called only from the Clerk webhook / sync route → same reasoning,
     `revalidateTag(tag, 'max')`.
   - `src/features/users/db/users.ts:18`'s `revalidateTag("test")` — verified it's dead code
@@ -89,9 +90,16 @@ standing instructions to confirm before any `git commit`/`push` in this repo.
   per-route resource-based auth checks — that's a larger architectural change Clerk is
   recommending for the future, out of scope for this compatibility upgrade.
 - **Phase 9 (live manual QA)**: Done by the user in a real browser — new-user sign-up (confirms
-  the `AdminLink` Suspense fix), sign-in, full purchase flow (checkout → "My Courses" updates
-  immediately, no stale-cache issue from the `'max'`-profile change), admin CRUD, marking a
-  lesson complete. All confirmed working.
+  the `AdminLink` Suspense fix), sign-in, full purchase flow, admin CRUD, marking a lesson
+  complete. All confirmed working at the time.
+  - **Correction, found on a later local re-test with `stripe listen`**: the purchase flow did
+    have a stale-cache issue — "My Courses" was empty right after checkout until a reload, caused
+    by the `'max'` profile on the purchase/course-access helpers. Fixed with `{ expire: 0 }`
+    (see Phase 5). Same re-test also found and fixed two webhook problems: Arcjet's bot
+    detection in `src/proxy.ts` returned 403 to Stripe's webhook sender (added
+    `CATEGORY:WEBHOOK` to the allow list — this would have hit production too), and the Stripe
+    route now returns 400 (not an unlogged 500) on a bad signature and logs processing errors.
+    Verified locally: webhook `[200]`, purchase saved, "My Courses" shows the course immediately.
 - **Deployed**: committed and merged to `main`, live on Vercel. Vercel's Node.js version is set
   to `24.x`, satisfying Arcjet's `≥24.5` floor.
 - **Not done, optional/low-priority**: Phase 8 (`next typegen` adoption — cosmetic, skipped);
