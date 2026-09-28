@@ -3,11 +3,9 @@ import z from "zod"
 
 export const env = createEnv({
   server: {
-    DB_PASSWORD: z.string().min(1),
-    DB_USER: z.string().min(1),
-    DB_NAME: z.string().min(1),
-    DB_HOST: z.string().min(1),
-    DB_PORT: z.coerce.number().default(5432),
+    // NOTE: pooled URL for the app, unpooled (direct) URL for drizzle-kit migrations.
+    NEONDB_DATABASE_URL: z.string().min(1),
+    NEONDB_DATABASE_URL_UNPOOLED: z.string().min(1),
     CLERK_SECRET_KEY: z.string().min(1),
     CLERK_WEBHOOK_SECRET: z.string().min(1),
     ARCJET_KEY: z.string().min(1),

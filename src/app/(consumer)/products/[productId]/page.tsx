@@ -37,7 +37,7 @@ import { Suspense } from "react"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+export const instant = false
 
 export default async function ProductPage({
   params,
@@ -51,13 +51,13 @@ export default async function ProductPage({
 
   const courseCount = product.courses.length
   const lessonCount = sumArray(product.courses, (course) =>
-    sumArray(course.courseSections, (s) => s.lessons.length)
+    sumArray(course.courseSections, (s) => s.lessons.length),
   )
 
   return (
-    <div className="container my-6">
-      <div className="flex gap-16 items-center justify-between">
-        <div className="flex gap-6 flex-col items-start">
+    <div className="my-6 container">
+      <div className="flex justify-between items-center gap-16">
+        <div className="flex flex-col items-start gap-6">
           <div className="flex flex-col gap-2">
             <Suspense
               fallback={
@@ -68,7 +68,7 @@ export default async function ProductPage({
             >
               <Price price={product.priceInDollars} />
             </Suspense>
-            <h1 className="text-4xl font-semibold">{product.name}</h1>
+            <h1 className="font-semibold text-4xl">{product.name}</h1>
             <div className="text-muted-foreground">
               {formatPlural(courseCount, {
                 singular: "course",
@@ -82,20 +82,20 @@ export default async function ProductPage({
             </div>
           </div>
           <div className="text-xl">{product.description}</div>
-          <Suspense fallback={<SkeletonButton className="h-16 w-36" />}>
+          <Suspense fallback={<SkeletonButton className="w-36 h-16" />}>
             <PurchaseButton productId={product.id} />
           </Suspense>
         </div>
-        <div className="relative aspect-video max-w-lg flex-grow">
+        <div className="relative max-w-lg aspect-video grow">
           <Image
             src={product.imageUrl}
             fill
             alt={product.name}
-            className="object-contain rounded-xl"
+            className="rounded-xl object-contain"
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8 items-start">
+      <div className="items-start gap-8 grid grid-cols-1 lg:grid-cols-2 mt-8">
         {product.courses.map((course) => (
           <Card key={course.id}>
             <CardHeader>
@@ -111,7 +111,7 @@ export default async function ProductPage({
                   {
                     plural: "lessons",
                     singular: "lesson",
-                  }
+                  },
                 )}
               </CardDescription>
             </CardHeader>
@@ -120,7 +120,7 @@ export default async function ProductPage({
                 {course.courseSections.map((section) => (
                   <AccordionItem key={section.id} value={section.id}>
                     <AccordionTrigger className="flex gap-2">
-                      <div className="flex flex-col flex-grow">
+                      <div className="flex flex-col grow">
                         <span className="text-lg">{section.name}</span>
                         <span className="text-muted-foreground">
                           {formatPlural(section.lessons.length, {
@@ -140,7 +140,7 @@ export default async function ProductPage({
                           {lesson.status === "preview" ? (
                             <Link
                               href={`/courses/${course.id}/lessons/${lesson.id}`}
-                              className="underline text-accent"
+                              className="text-accent underline"
                             >
                               {lesson.name}
                             </Link>
@@ -170,7 +170,7 @@ async function PurchaseButton({ productId }: { productId: string }) {
     return <p>You already own this product</p>
   } else {
     return (
-      <Button className="text-xl h-auto py-4 px-8 rounded-lg" asChild>
+      <Button className="px-8 py-4 rounded-lg h-auto text-xl" asChild>
         <Link href={`/products/${productId}/purchase`}>Get Now</Link>
       </Button>
     )
@@ -184,7 +184,7 @@ async function Price({ price }: { price: number }) {
   }
 
   return (
-    <div className="flex gap-2 items-baseline">
+    <div className="flex items-baseline gap-2">
       <div className={"line-through text-sm opacity-50"}>
         {formatPrice(price)}
       </div>
@@ -243,7 +243,7 @@ async function getPublicProduct(id: string) {
       getLessonCourseTag(cp.course.id),
       getCourseSectionCourseTag(cp.course.id),
       getCourseIdTag(cp.course.id),
-    ])
+    ]),
   )
 
   const { courseProducts, ...other } = product
