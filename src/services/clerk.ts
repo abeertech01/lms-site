@@ -1,43 +1,48 @@
 import { db } from "@/drizzle/db"
 import { UserRole, UserTable } from "@/drizzle/schema"
-import { getUserIdTag } from "@/features/users/db/cache"
 import { auth, clerkClient } from "@clerk/nextjs/server"
 import { eq } from "drizzle-orm"
-import { cacheTag } from "next/cache"
 import { redirect } from "next/navigation"
 
 const client = await clerkClient()
 
 export async function getCurrentUser({ allData = false } = {}) {
-  const { userId, sessionClaims, redirectToSignIn } = await auth()
+  const { userId: clerkUserId, redirectToSignIn } = await auth()
 
-  if (userId != null && sessionClaims.dbId == null) {
-    /** NOTE:
-     * In this state — there is a user but it's not saved in the database yet.
-     */
-    redirect("/api/clerk/syncUsers")
+  if (clerkUserId == null) {
+    return {
+      clerkUserId,
+      userId: undefined,
+      role: undefined,
+      user: undefined,
+      redirectToSignIn,
+    }
   }
 
-  const user =
-    allData && sessionClaims?.dbId != null
-      ? await getUser(sessionClaims.dbId)
-      : undefined
+  /** NOTE:
+   * The DB user is looked up by clerkUserId, not by the dbId/role stored in
+   * the Clerk session token. Local dev and production share one Clerk
+   * instance but have separate databases, so the token's dbId can point at
+   * the *other* environment's row, and a freshly synced user's token keeps
+   * the old value until it refreshes — that sent signed-in users round a
+   * syncUsers redirect loop and hung pages. clerkUserId is the same in every
+   * database, so it's always the right key.
+   */
+  const user = await getUserByClerkId(clerkUserId)
 
-  if (userId != null && allData && user == null) {
+  if (user == null) {
     /** NOTE:
-     * The session's dbId points at a row that doesn't exist in this
-     * database (e.g. it was issued against a different environment's
-     * database, such as local dev vs. production). Re-sync instead of
-     * treating the user as signed out.
+     * In this state — there is a user but it's not saved in the database yet.
+     * syncUsers inserts the row, so the next request finds it (no loop).
      */
     redirect("/api/clerk/syncUsers")
   }
 
   return {
-    clerkUserId: userId,
-    userId: sessionClaims?.dbId,
-    role: sessionClaims?.role,
-    user,
+    clerkUserId,
+    userId: user.id,
+    role: user.role,
+    user: allData ? user : undefined,
     redirectToSignIn,
   }
 }
@@ -55,12 +60,12 @@ export function syncClerkUserMetadata(user: {
   })
 }
 
-async function getUser(id: string) {
-  "use cache"
-  cacheTag(getUserIdTag(id))
-  console.log("Called")
-
-  return await db.query.UserTable.findFirst({
-    where: eq(UserTable.id, id),
+// NOTE: deliberately not "use cache". The user cache is revalidated with
+// stale-while-revalidate, so a cached "not found" could outlive the syncUsers
+// insert and cause another redirect. clerkUserId is unique (indexed), so this
+// is a single fast lookup per signed-in request.
+async function getUserByClerkId(clerkUserId: string) {
+  return db.query.UserTable.findFirst({
+    where: eq(UserTable.clerkUserId, clerkUserId),
   })
 }
