@@ -22,9 +22,14 @@ export async function GET(request: Request) {
     role: user.publicMetadata.role ?? "user",
   })
 
-  await syncClerkUserMetadata(dbUser)
-
-  await new Promise((res) => setTimeout(res, 100))
+  try {
+    // NOTE: only the role claim (used by proxy.ts for /admin) depends on this;
+    // getCurrentUser looks the user up by clerkUserId, so a Clerk API failure
+    // here (e.g. 429 Too Many Requests) shouldn't block the user.
+    await syncClerkUserMetadata(dbUser)
+  } catch (error) {
+    console.error("syncUsers: failed to sync Clerk metadata", error)
+  }
 
   return NextResponse.redirect(
     new URL(request.headers.get("referer") ?? "/", request.url)
