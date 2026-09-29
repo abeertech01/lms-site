@@ -1,5 +1,6 @@
 ## Immediate
 
+- [x] get rid of author image and name in the course/product card.
 - [ ] In admin page, the logo becomes way smaller. make it as it is in other routes. The logo should not be changed any way based on route changing or navigation.
 - [ ] delete all the stored data and add courses again - from different accounts.
 - [ ] Upgrade what left for compatibility. Bring new updates of the packages.
