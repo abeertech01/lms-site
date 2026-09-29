@@ -1,6 +1,6 @@
 "use server"
 
-import { db } from "@/drizzle/db"
+import { db, transaction } from "@/drizzle/db"
 import { canRefundPurchases } from "../permissions/purchases"
 import { getCurrentUser } from "@/services/clerk"
 import { updatePurchase } from "../db/purchases"
@@ -15,7 +15,7 @@ export async function refundPurchase(id: string) {
     }
   }
 
-  const data = await db.transaction(async (trx) => {
+  const data = await transaction(async (trx) => {
     const refundedPurchase = await updatePurchase(
       id,
       { refundedAt: new Date() },

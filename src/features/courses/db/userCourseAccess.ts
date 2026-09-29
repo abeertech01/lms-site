@@ -1,4 +1,4 @@
-import { db } from "@/drizzle/db"
+import { db, type Queryable } from "@/drizzle/db"
 import {
   ProductTable,
   PurchaseTable,
@@ -15,14 +15,9 @@ export async function addUserCourseAccess(
     userId: string
     courseIds: string[]
   },
-  trx: Omit<typeof db, "$client"> = db
+  trx: Queryable = db
 ) {
-  /** NOTE: Omit<typeof db, "$client">
-   * It means use the same type as db, but omit the internal $client property.
-   * db → main Drizzle instance with $client (the database connection)
-   * trx → transaction-bound Drizzle instance without exposing $client
-   * Drizzle replaces $client with a transaction client, so it doesn’t want you to mess with or rely on the original one.
-   */
+  /** NOTE: Queryable accepts either db or a transaction (trx), so this works inside and outside transaction(). */
   const accesses = await trx
     .insert(UserCourseAccessTable)
     .values(courseIds.map((courseId) => ({ userId, courseId })))
@@ -42,7 +37,7 @@ export async function revokeUserCourseAccess(
     userId: string
     productId: string
   },
-  trx: Omit<typeof db, "$client">
+  trx: Queryable
 ) {
   const validPurchases = await trx.query.PurchaseTable.findMany({
     where: and(

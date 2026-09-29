@@ -1,53 +1,44 @@
-import { Pool, neonConfig } from "@neondatabase/serverless"
-import { drizzle } from "drizzle-orm/neon-serverless"
-import { attachDatabasePool } from "@vercel/functions"
+import { neon, neonConfig, Pool } from "@neondatabase/serverless"
+import { drizzle as drizzleHttp } from "drizzle-orm/neon-http"
+import { drizzle as drizzleWs } from "drizzle-orm/neon-serverless"
+import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core"
 import ws from "ws"
 import * as schema from "./schema"
 import { env } from "@/data/env/server"
 
-// NOTE: Neon's serverless driver talks to the database over WebSocket instead
-// of a plain TCP socket. node-postgres (plain TCP) doesn't handle Neon's
-// autosuspend/cold-start: a request needing a fresh connection while the
-// compute was asleep just hung on the socket until Vercel's 300s function
-// limit killed it — a real outage, twice (fixed once, then undone by a later
-// commit that switched back to node-postgres). This driver is built by Neon
-// specifically to handle that wake-up correctly. Both local dev and
-// production now point at the same Neon database, so there's no separate
-// "local Postgres" driver path to keep around.
+// NOTE: Every query is a standalone HTTPS request — no pooled socket survives
+// between requests. A module-level WebSocket Pool on Vercel Fluid Compute kept
+// connections across instance suspensions; they went dead silently, the next
+// query hung on one, and because "use cache" dedupes in-flight fills, every
+// request on that instance hung with it until Vercel recycled the instance.
+export const db = drizzleHttp({
+  client: neon(env.NEONDB_DATABASE_URL),
+  schema,
+})
+
+export type Queryable = Omit<
+  PgDatabase<PgQueryResultHKT, typeof schema>,
+  "$client"
+>
+
 neonConfig.webSocketConstructor = ws
 
-const pool = new Pool({
-  connectionString: env.NEONDB_DATABASE_URL,
-  // pg.Pool's default is 0 (wait forever) for connectionTimeoutMillis, which turns a bad
-  // connection into a full 300s hang on Vercel instead of a fast, debuggable error.
-  connectionTimeoutMillis: 10_000,
-  // Without this, a query on a connection the DB provider silently dropped while idle
-  // (common on serverless) hangs until Vercel's 300s function timeout kills it instead
-  // of failing fast.
-  query_timeout: 15_000,
-  // Short, per Vercel's pooling guide: closes unused connections quickly while still
-  // allowing reuse under load.
-  idleTimeoutMillis: 5_000,
-})
+type Tx = Parameters<
+  Parameters<ReturnType<typeof drizzleWs<typeof schema>>["transaction"]>[0]
+>[0]
 
-// NOTE: pg-style Pools emit "error" for failures on an idle client in the
-// background (e.g. the provider silently dropped a connection that was just
-// sitting in the pool) — not tied to any in-flight query's promise. With no
-// listener, Node's EventEmitter throws that error instead, which in a
-// long-lived Vercel Fluid Compute instance can surface as an unrelated
-// in-flight request hanging/crashing rather than a clean, fast failure. This
-// is the single most likely explanation for the intermittent "hangs after
-// being idle, works again right after" pattern we saw in production.
-pool.on("error", (err: unknown) => {
-  console.error("db pool: error on idle client", err)
-})
-
-export const db = drizzle({ client: pool, schema })
-
-// NOTE: Vercel Fluid Compute suspends idle function instances, and timers
-// (like idleTimeoutMillis above) don't run while suspended — so pooled
-// connections outlive the instance's pause and go stale. This keeps the
-// instance alive just long enough to close idle connections before it
-// suspends. It's a no-op outside Vercel (local dev).
-// See: https://vercel.com/kb/guide/connection-pooling-with-functions
-attachDatabasePool(pool)
+// NOTE: The HTTP driver can't do interactive transactions, so each one gets its
+// own WebSocket pool that lives only for that transaction (Neon's guidance for
+// serverless: never share a Pool across requests).
+export async function transaction<T>(fn: (trx: Tx) => Promise<T>) {
+  const pool = new Pool({
+    connectionString: env.NEONDB_DATABASE_URL,
+    connectionTimeoutMillis: 10_000,
+  })
+  pool.on("error", (err: unknown) => console.error("db tx pool error", err))
+  try {
+    return await drizzleWs({ client: pool, schema }).transaction(fn)
+  } finally {
+    await pool.end()
+  }
+}
