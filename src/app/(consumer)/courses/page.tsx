@@ -37,13 +37,13 @@ import { Suspense } from "react"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+export const instant = false
 
 export default function CoursesPage() {
   return (
-    <div className="container my-6">
+    <div className="my-6 container">
       <PageHeader title="My Courses" />
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="gap-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
         <Suspense
           fallback={
             <SkeletonArray amount={3}>
@@ -66,7 +66,7 @@ async function CourseGrid() {
 
   if (courses.length === 0) {
     return (
-      <div className="flex flex-col gap-2 items-start">
+      <div className="flex flex-col items-start gap-2">
         You have no courses yet
         <Button asChild size={"lg"}>
           <Link href={"/"}>Browse Courses</Link>
@@ -76,7 +76,7 @@ async function CourseGrid() {
   }
 
   return courses.map((course) => (
-    <Card key={course.id} className="overflow-hidden h-full flex flex-col">
+    <Card key={course.id} className="flex flex-col h-full overflow-hidden">
       <CardHeader>
         <CardTitle>{course.name}</CardTitle>
         <CardDescription>
@@ -95,14 +95,14 @@ async function CourseGrid() {
         {course.description}
       </CardContent>
       {/* NOTE: this flex-grow div makes every card grow with the same height */}
-      <div className="flex-grow" />
+      <div className="grow" />
       <CardFooter>
         <Button asChild>
           <Link href={`/courses/${course.id}`}>View Course</Link>
         </Button>
       </CardFooter>
       <div
-        className="bg-accent h-2 -mt-2"
+        className="bg-accent -mt-2 h-2"
         style={{
           width: `${(course.lessonsComplete / course.lessonsCount) * 100}%`,
         }}
@@ -136,7 +136,7 @@ async function getUserCourses(userId: string) {
   "use cache"
   cacheTag(
     getUserCourseAccessUserTag(userId),
-    getUserLessonCompleteUserTag(userId)
+    getUserLessonCompleteUserTag(userId),
   )
 
   const courses = await db
@@ -153,26 +153,26 @@ async function getUserCourses(userId: string) {
       UserCourseAccessTable,
       and(
         eq(UserCourseAccessTable.courseId, CourseTable.id),
-        eq(UserCourseAccessTable.userId, userId)
-      )
+        eq(UserCourseAccessTable.userId, userId),
+      ),
     )
     .leftJoin(
       CourseSectionTable,
       and(
         eq(CourseSectionTable.courseId, CourseTable.id),
-        wherePublicCourseSections
-      )
+        wherePublicCourseSections,
+      ),
     )
     .leftJoin(
       LessonTable,
-      and(eq(LessonTable.sectionId, CourseSectionTable.id), wherePublicLessons)
+      and(eq(LessonTable.sectionId, CourseSectionTable.id), wherePublicLessons),
     )
     .leftJoin(
       UserLessonCompleteTable,
       and(
         eq(UserLessonCompleteTable.lessonId, LessonTable.id),
-        eq(UserLessonCompleteTable.userId, userId)
-      )
+        eq(UserLessonCompleteTable.userId, userId),
+      ),
     )
     .where(isNotNull(UserCourseAccessTable.courseId))
     .orderBy(CourseTable.name)
@@ -182,7 +182,7 @@ async function getUserCourses(userId: string) {
     cacheTag(
       getCourseIdTag(course.id),
       getCourseSectionCourseTag(course.id),
-      getLessonCourseTag(course.id)
+      getLessonCourseTag(course.id),
     )
   })
 
