@@ -26,14 +26,14 @@ function Navbar() {
     <header className="sticky top-0 z-10 flex bg-background shadow h-12">
       <nav className="flex gap-4 container">
         <div className="flex items-center gap-2 mr-auto">
-          <Link className="flex items-center" href={"/"}>
-            <div className="flex items-center rounded-lg bg-violet-100 px-3 py-1.5">
+          <Link className="flex items-center px-2" href={"/"}>
+            <div className="flex items-center bg-violet-100 rounded-lg">
               <Image
                 src="/triplea-logo.png"
                 alt="TripleA"
                 width={160}
                 height={80}
-                className="w-auto h-6"
+                className="w-auto h-10"
                 priority
               />
             </div>
