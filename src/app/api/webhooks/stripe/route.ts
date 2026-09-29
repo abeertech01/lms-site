@@ -1,5 +1,5 @@
 import { env } from "@/data/env/server"
-import { db } from "@/drizzle/db"
+import { db, transaction } from "@/drizzle/db"
 import { ProductTable, UserTable } from "@/drizzle/schema"
 import { addUserCourseAccess } from "@/features/courses/db/userCourseAccess"
 import { insertPurchase } from "@/features/purchases/db/purchases"
@@ -93,7 +93,7 @@ async function processStripeCheckout(checkoutSession: Stripe.Checkout.Session) {
   if (user == null) throw new Error("User not found")
 
   const courseIds = product.courseProducts.map((cp) => cp.courseId)
-  await db.transaction(async (trx) => {
+  await transaction(async (trx) => {
     try {
       await addUserCourseAccess({ userId: user.id, courseIds }, trx) // NOTE: adds courses the user has access to
       await insertPurchase(

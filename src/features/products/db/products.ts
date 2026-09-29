@@ -1,4 +1,4 @@
-import { db } from "@/drizzle/db"
+import { db, transaction } from "@/drizzle/db"
 import {
   CourseProductTable,
   CourseSectionTable,
@@ -155,7 +155,7 @@ export async function getLatestProducts(limit = 4) {
 export async function insertProduct(
   data: typeof ProductTable.$inferInsert & { courseIds: string[] }
 ) {
-  const newProduct = await db.transaction(async (trx) => {
+  const newProduct = await transaction(async (trx) => {
     const [newProduct] = await trx.insert(ProductTable).values(data).returning()
     if (newProduct == null) {
       trx.rollback()
@@ -181,7 +181,7 @@ export async function updateProduct(
   id: string,
   data: Partial<typeof ProductTable.$inferInsert> & { courseIds: string[] }
 ) {
-  const updatedProduct = await db.transaction(async (trx) => {
+  const updatedProduct = await transaction(async (trx) => {
     const [updatedProduct] = await trx
       .update(ProductTable)
       .set(data)

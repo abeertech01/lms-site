@@ -1,4 +1,4 @@
-import { db } from "@/drizzle/db"
+import { db, transaction } from "@/drizzle/db"
 import { CourseSectionTable, LessonTable } from "@/drizzle/schema"
 import { eq } from "drizzle-orm"
 import { revalidateLessonCache } from "./cache/lessons"
@@ -14,7 +14,7 @@ export async function getNextCourseLessonOrder(sectionId: string) {
 }
 
 /** NOTE:
- * db.transaction(async (trx) => { ... })
+ * transaction(async (trx) => { ... })
  * This starts a database transaction using Drizzle ORM.
   Inside this block, all DB operations run on a single connection (trx).
   If one of them fails, everything inside automatically rolls back.
@@ -24,7 +24,7 @@ export async function getNextCourseLessonOrder(sectionId: string) {
  * Second element of Promise.all looks up for which courseId matches to provided section id and retrieves courseId.
  */
 export async function insertLesson(data: typeof LessonTable.$inferInsert) {
-  const [newLesson, courseId] = await db.transaction(async (trx) => {
+  const [newLesson, courseId] = await transaction(async (trx) => {
     const [[newLesson], section] = await Promise.all([
       trx.insert(LessonTable).values(data).returning(),
       trx.query.CourseSectionTable.findFirst({
@@ -48,7 +48,7 @@ export async function updateLesson(
   id: string,
   data: Partial<typeof LessonTable.$inferInsert>
 ) {
-  const [updatedLesson, courseId] = await db.transaction(async (trx) => {
+  const [updatedLesson, courseId] = await transaction(async (trx) => {
     const currentLesson = await trx.query.LessonTable.findFirst({
       where: eq(LessonTable.id, id),
       columns: { sectionId: true },
@@ -87,7 +87,7 @@ export async function updateLesson(
 }
 
 export async function deleteLesson(id: string) {
-  const [deletedLesson, courseId] = await db.transaction(async (trx) => {
+  const [deletedLesson, courseId] = await transaction(async (trx) => {
     const [deletedLesson] = await trx
       .delete(LessonTable)
       .where(eq(LessonTable.id, id))
@@ -113,7 +113,7 @@ export async function deleteLesson(id: string) {
 }
 
 export async function updateLessonOrders(lessonIds: string[]) {
-  const [lessons, courseId] = await db.transaction(async (trx) => {
+  const [lessons, courseId] = await transaction(async (trx) => {
     const lessons = await Promise.all(
       lessonIds.map((id, index) =>
         db

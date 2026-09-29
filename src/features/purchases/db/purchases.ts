@@ -1,11 +1,11 @@
-import { db } from "@/drizzle/db"
+import { db, type Queryable } from "@/drizzle/db"
 import { PurchaseTable } from "@/drizzle/schema"
 import { revalidatePurchaseCache } from "./cache"
 import { eq } from "drizzle-orm"
 
 export async function insertPurchase(
   data: typeof PurchaseTable.$inferInsert,
-  trx: Omit<typeof db, "$client"> = db
+  trx: Queryable = db
 ) {
   const details = data.productDetails
 
@@ -30,7 +30,7 @@ export async function insertPurchase(
 export async function updatePurchase(
   id: string,
   data: Partial<typeof PurchaseTable.$inferInsert>,
-  trx: Omit<typeof db, "$client"> = db
+  trx: Queryable = db
 ) {
   const details = data.productDetails
 
