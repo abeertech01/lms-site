@@ -30,6 +30,18 @@ const pool = new Pool({
   idleTimeoutMillis: 5_000,
 })
 
+// NOTE: pg-style Pools emit "error" for failures on an idle client in the
+// background (e.g. the provider silently dropped a connection that was just
+// sitting in the pool) — not tied to any in-flight query's promise. With no
+// listener, Node's EventEmitter throws that error instead, which in a
+// long-lived Vercel Fluid Compute instance can surface as an unrelated
+// in-flight request hanging/crashing rather than a clean, fast failure. This
+// is the single most likely explanation for the intermittent "hangs after
+// being idle, works again right after" pattern we saw in production.
+pool.on("error", (err: unknown) => {
+  console.error("db pool: error on idle client", err)
+})
+
 export const db = drizzle({ client: pool, schema })
 
 // NOTE: Vercel Fluid Compute suspends idle function instances, and timers
