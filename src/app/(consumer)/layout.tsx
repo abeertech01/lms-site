@@ -31,61 +31,7 @@ function Navbar() {
             />
           </div>
         </Link>
-
-        <Show
-          when="signed-in"
-          fallback={
-            <Button
-              className="self-center"
-              render={<SignInButton>Sign In</SignInButton>}
-            />
-          }
-        >
-          <Link
-            href={"/products"}
-            className="hidden md:flex items-center hover:bg-accent/10 px-2"
-          >
-            All Products
-          </Link>
-          <Link
-            href={"/courses"}
-            className="hidden md:flex items-center hover:bg-accent/10 px-2"
-          >
-            My Courses
-          </Link>
-          <Link
-            href={"/purchases"}
-            className="hidden md:flex items-center hover:bg-accent/10 px-2"
-          >
-            Purchases History
-          </Link>
-          <Suspense fallback={null}>
-            {/* <UserMenuWithAdminCheck /> */}
-            Temp
-          </Suspense>
-        </Show>
       </nav>
     </header>
   )
 }
-
-// async function UserMenuWithAdminCheck() {
-//   const user = await getCurrentUser({ allData: true })
-//   const isAdmin = canAccessAdminPages(user)
-
-//   return (
-//     <>
-//       {isAdmin && (
-//         <Link
-//           href="/admin"
-//           className="hidden md:flex items-center hover:bg-accent/10 px-2"
-//         >
-//           Admin
-//         </Link>
-//       )}
-//       <div className="self-center size-8">
-//         <UserMenu isAdmin={isAdmin} />
-//       </div>
-//     </>
-//   )
-// }
