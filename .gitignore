@@ -39,7 +39,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# design exports (local reference only)
-/design/
-/triple-a-redesign.zip
