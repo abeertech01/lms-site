@@ -1,6 +1,9 @@
+import { Button } from "@/components/ui/button"
+import { Show, SignInButton } from "@clerk/nextjs"
 import Image from "next/image"
 import Link from "next/link"
-import { ReactNode } from "react"
+import { ReactNode, Suspense } from "react"
+import { UserMenu } from "./UserMenu"
 
 export default function ConsumerLayout({
   children,
@@ -29,7 +32,51 @@ function Navbar() {
             />
           </div>
         </Link>
+
+        <Suspense fallback={null}>
+          <Show
+            when="signed-in"
+            fallback={
+              <Button
+                className="self-center"
+                render={<SignInButton>Sign In</SignInButton>}
+              />
+            }
+          >
+            <Link
+              href={"/products"}
+              className="hidden md:flex items-center hover:bg-accent/10 px-2"
+            >
+              All Products
+            </Link>
+            <Link
+              href={"/courses"}
+              className="hidden md:flex items-center hover:bg-accent/10 px-2"
+            >
+              My Courses
+            </Link>
+            <Link
+              href={"/purchases"}
+              className="hidden md:flex items-center hover:bg-accent/10 px-2"
+            >
+              Purchases History
+            </Link>
+            <Suspense fallback={null}>
+              <UserMenuWithAdminCheck />
+            </Suspense>
+          </Show>
+        </Suspense>
       </nav>
     </header>
+  )
+}
+
+function UserMenuWithAdminCheck() {
+  return (
+    <>
+      {/* <div className="self-center size-8">
+        <UserMenu isAdmin={isAdmin} />
+      </div> */}
+    </>
   )
 }
