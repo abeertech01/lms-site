@@ -1,8 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { ReactNode, Suspense } from "react"
-import { Show, SignInButton } from "@clerk/nextjs"
-import { Button } from "@/components/ui/button"
+import { ReactNode } from "react"
 
 export default function ConsumerLayout({
   children,
