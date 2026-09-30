@@ -5,15 +5,9 @@ import { Toaster } from "@/components/ui/toast"
 import { Footer } from "@/components/Footer"
 import { ClerkProvider } from "@clerk/nextjs"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-})
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-})
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false
 
 export const metadata: Metadata = {
   title: "TripleA LMS",
@@ -23,11 +17,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="flex flex-col min-h-full">
+    <html lang="en">
+      <body className="antialiased">
         <ClerkProvider>
           <div className="flex flex-col min-h-screen">
             <div className="flex-1">{children}</div>
