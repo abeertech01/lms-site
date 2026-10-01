@@ -1,3 +1,68 @@
-export default function CoursesPage() {
-  return <div>CoursesPage</div>
+import PageHeader from "@/components/PageHeader"
+import { Button } from "@/components/ui/button"
+import { db } from "@/drizzle/db"
+import CourseTable from "@/features/courses/components/CourseTable"
+import { getCourseGlobalTag } from "@/features/courses/db/cache/courses"
+import { cacheTag } from "next/cache"
+import Link from "next/link"
+import {
+  CourseSectionTable,
+  CourseTable as DbCourseTable,
+  LessonTable,
+  UserCourseAccessTable,
+} from "@/drizzle/schema"
+import { asc, countDistinct, eq } from "drizzle-orm"
+import { getUserCourseAccessGlobalTag } from "@/features/courses/db/cache/userCourseAccess"
+import { getCourseSectionGlobalTag } from "@/features/courseSections/db/cache"
+import { getLessonGlobalTag } from "@/features/lessons/db/cache/lessons"
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false
+
+export default async function CoursesPage() {
+  const courses = await getCourses()
+
+  return (
+    <div className="my-6 container">
+      <PageHeader title="Courses">
+        <Button>
+          <Link href={"/admin/courses/new"}>New Courses</Link>
+        </Button>
+      </PageHeader>
+
+      <CourseTable courses={courses} />
+    </div>
+  )
+}
+
+async function getCourses() {
+  "use cache"
+  cacheTag(
+    getCourseGlobalTag(),
+    getUserCourseAccessGlobalTag(),
+    getCourseSectionGlobalTag(),
+    getLessonGlobalTag(),
+  )
+
+  return await db
+    .select({
+      id: DbCourseTable.id,
+      name: DbCourseTable.name,
+      sectionsCount: countDistinct(CourseSectionTable.id),
+      lessonsCount: countDistinct(LessonTable.id),
+      studentsCount: countDistinct(UserCourseAccessTable.userId),
+    })
+    .from(DbCourseTable)
+    .leftJoin(
+      CourseSectionTable,
+      eq(CourseSectionTable.courseId, DbCourseTable.id),
+    )
+    .leftJoin(LessonTable, eq(LessonTable.sectionId, CourseSectionTable.id))
+    .leftJoin(
+      UserCourseAccessTable,
+      eq(UserCourseAccessTable.courseId, DbCourseTable.id),
+    )
+    .orderBy(asc(DbCourseTable.name))
+    .groupBy(DbCourseTable.id)
 }
