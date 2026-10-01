@@ -4,6 +4,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { ReactNode, Suspense } from "react"
 import { UserMenu } from "./UserMenu"
+import { getCurrentUser } from "@/services/clerk"
+import { canAccessAdminPages } from "@/permissions/general"
 
 export default function ConsumerLayout({
   children,
@@ -71,12 +73,23 @@ function Navbar() {
   )
 }
 
-function UserMenuWithAdminCheck() {
+async function UserMenuWithAdminCheck() {
+  const user = await getCurrentUser({ allData: true })
+  const isAdmin = canAccessAdminPages(user)
+
   return (
     <>
-      {/* <div className="self-center size-8">
+      {isAdmin && (
+        <Link
+          href="/admin"
+          className="hidden md:flex items-center hover:bg-accent/10 px-2"
+        >
+          Admin
+        </Link>
+      )}
+      <div className="self-center size-8">
         <UserMenu isAdmin={isAdmin} />
-      </div> */}
+      </div>
     </>
   )
 }

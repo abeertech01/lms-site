@@ -1,3 +1,5 @@
+"use client"
+
 import { useIsMobile } from "@/hooks/use-is-mobile"
 import { UserButton } from "@clerk/react"
 import {
