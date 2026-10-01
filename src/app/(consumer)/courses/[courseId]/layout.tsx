@@ -1,4 +1,5 @@
 import { db } from "@/drizzle/db"
+import { auth } from "@clerk/nextjs/server"
 import { getCourseIdTag } from "@/features/courses/db/cache/courses"
 import { getCourseSectionCourseTag } from "@/features/courseSections/db/cache"
 import { getLessonCourseTag } from "@/features/lessons/db/cache/lessons"
@@ -20,6 +21,8 @@ export default async function CoursePageLayout({
   params: Promise<{ courseId: string }>
   children: ReactNode
 }) {
+  await auth.protect()
+
   const { courseId } = await params
   const course = await getCourse(courseId)
 

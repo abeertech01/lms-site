@@ -1,13 +1,23 @@
-import { clerkMiddleware } from "@clerk/nextjs/server"
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
 import arcjet, { detectBot, shield, slidingWindow } from "@arcjet/next"
-import { NextResponse } from "next/server"
 import { env } from "./data/env/server"
 import { setUserCountryHeader } from "./lib/userCountryHeader"
+import { NextResponse } from "next/server"
+
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/api(.*)",
+  "/products(.*)",
+])
+
+const isAdminRoute = createRouteMatcher(["/admin(.*)"])
 
 /** NOTE:
  * Shield protects your app from common attacks e.g. SQL injection
  * LIVE = Active enforcement — the rule actually blocks, rate-limits, or rejects real requests when triggered.
- * DRY_RUN = the rule records and logs what it would have done but doesn't block requests. Basically this one is used in testing purpose, it doesn't really block or limit use.
+ * DRY_RUN = the rule records and logs what it would have done but doesn’t block requests. Basically this one is used in testing purpose, it doesn't really block or limit use.
  *
  * slidingWindow: This defines a rate-limiting strategy — i.e., how many requests are allowed in a certain time frame. (per person)
  */
@@ -35,14 +45,7 @@ const aj = arcjet({
   ],
 })
 
-// NOTE: createRouteMatcher-based path protection is deprecated — Clerk now
-// recommends per-resource auth.protect() calls in each protected page,
-// layout, route handler, or Server Function instead, since path matching
-// here can drift out of sync with how Next.js actually routes requests.
-// clerkMiddleware() itself still has to stay: it's what makes auth state
-// available to the rest of the app.
-// https://clerk.com/docs/guides/development/upgrading/upgrade-guides/migrate-from-create-route-matcher
-export default clerkMiddleware(async (_auth, req) => {
+const proxy = clerkMiddleware(async (auth, req) => {
   const decision = await aj.protect(
     env.TEST_IP_ADDRESS
       ? {
@@ -57,6 +60,17 @@ export default clerkMiddleware(async (_auth, req) => {
     return new NextResponse(null, { status: 403 })
   }
 
+  if (isAdminRoute(req)) {
+    const user = await auth.protect()
+    if (user.sessionClaims.role !== "admin") {
+      return new NextResponse(null, { status: 404 })
+    }
+  }
+
+  if (!isPublicRoute(req)) {
+    await auth.protect()
+  }
+
   if (!decision.ip.isVpn() && !decision.ip.isProxy()) {
     const headers = new Headers(req.headers)
     setUserCountryHeader(headers, decision.ip.country) // NOTE: sets the country header, thus we can get the country name and we'll be able to use it.
@@ -65,13 +79,13 @@ export default clerkMiddleware(async (_auth, req) => {
   }
 })
 
+export default proxy
+
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
+    // NOTE: Skip Next.js internals and all static files, unless found in search params
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
+    // NOTE: Always run for API routes
     "/(api|trpc)(.*)",
-    // Always run for Clerk-specific frontend API routes
-    "/__clerk/(.*)",
   ],
 }
