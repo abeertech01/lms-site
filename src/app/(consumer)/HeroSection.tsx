@@ -20,7 +20,7 @@ export function HeroSection() {
         <Button
           size="lg"
           nativeButton={false}
-          render={<Link href="/products">Browse All Products</Link>}
+          render={<Link href="/all-products">Browse All Products</Link>}
         />
       </div>
     </section>
