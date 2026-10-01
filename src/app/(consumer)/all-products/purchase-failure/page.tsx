@@ -15,6 +15,7 @@ export default async function ProductPurchaseFailurePage() {
         </div>
         <Button
           className="px-8 py-4 rounded-lg h-auto text-xl"
+          nativeButton={false}
           render={<Link href={"/"}>Try again</Link>}
         />
       </div>

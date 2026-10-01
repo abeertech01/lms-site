@@ -1,11 +1,194 @@
+import PageHeader from "@/components/PageHeader"
+import {
+  SkeletonArray,
+  SkeletonButton,
+  SkeletonText,
+} from "@/components/Skeleton"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { db } from "@/drizzle/db"
+import {
+  CourseSectionTable,
+  CourseTable,
+  LessonTable,
+  UserCourseAccessTable,
+  UserLessonCompleteTable,
+} from "@/drizzle/schema"
+import { getCourseIdTag } from "@/features/courses/db/cache/courses"
+import { getUserCourseAccessUserTag } from "@/features/courses/db/cache/userCourseAccess"
+import { getCourseSectionCourseTag } from "@/features/courseSections/db/cache"
+import { wherePublicCourseSections } from "@/features/courseSections/permissions/sections"
+import { getLessonCourseTag } from "@/features/lessons/db/cache/lessons"
+import { getUserLessonCompleteUserTag } from "@/features/lessons/db/cache/userLessonComplete"
+import { wherePublicLessons } from "@/features/lessons/permissions/lessons"
+import { formatPlural } from "@/lib/formatters"
+import { getCurrentUser } from "@/services/clerk"
 import { auth } from "@clerk/nextjs/server"
+import { and, countDistinct, eq, isNotNull } from "drizzle-orm"
+import { cacheTag } from "next/cache"
+import Link from "next/link"
+import { Suspense } from "react"
 
-export default async function Courses() {
+export const instant = false
+
+export default async function CoursesPage() {
   await auth.protect()
 
   return (
-    <div>
-      Courses
+    <div className="my-6 container">
+      <PageHeader title="My Courses" />
+      <div className="gap-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+        <Suspense
+          fallback={
+            <SkeletonArray amount={3}>
+              <SkeletonCourseCard />
+            </SkeletonArray>
+          }
+        >
+          <CourseGrid />
+        </Suspense>
+      </div>
     </div>
   )
+}
+
+async function CourseGrid() {
+  const { userId, redirectToSignIn } = await getCurrentUser()
+  if (userId == null) return redirectToSignIn()
+
+  const courses = await getUserCourses(userId)
+
+  if (courses.length === 0) {
+    return (
+      <div className="flex flex-col items-start gap-2">
+        You have no courses yet
+        <Button
+          size={"lg"}
+          nativeButton={false}
+          render={<Link href={"/"}>Browse Courses</Link>}
+        />
+      </div>
+    )
+  }
+
+  return courses.map((course) => (
+    <Card key={course.id} className="flex flex-col h-full overflow-hidden">
+      <CardHeader>
+        <CardTitle>{course.name}</CardTitle>
+        <CardDescription>
+          {formatPlural(course.sectionsCount, {
+            plural: "sections",
+            singular: "section",
+          })}{" "}
+          •{" "}
+          {formatPlural(course.lessonsCount, {
+            plural: "lessons",
+            singular: "lesson",
+          })}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="line-clamp-3" title={course.description}>
+        {course.description}
+      </CardContent>
+      {/* NOTE: this flex-grow div makes every card grow with the same height */}
+      <div className="grow" />
+      <CardFooter>
+        <Button
+          nativeButton={false}
+          render={<Link href={`/courses/${course.id}`}>View Course</Link>}
+        />
+      </CardFooter>
+      <div
+        className="bg-accent -mt-2 h-2"
+        style={{
+          width: `${(course.lessonsComplete / course.lessonsCount) * 100}%`,
+        }}
+      />
+    </Card>
+  ))
+}
+
+function SkeletonCourseCard() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          <SkeletonText className="w-3/4" />
+        </CardTitle>
+        <CardDescription>
+          <SkeletonText className="w-1/2" />
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <SkeletonText className="w-1/2" />
+      </CardContent>
+      <CardFooter>
+        <SkeletonButton />
+      </CardFooter>
+    </Card>
+  )
+}
+
+async function getUserCourses(userId: string) {
+  "use cache"
+  cacheTag(
+    getUserCourseAccessUserTag(userId),
+    getUserLessonCompleteUserTag(userId),
+  )
+
+  const courses = await db
+    .select({
+      id: CourseTable.id,
+      name: CourseTable.name,
+      description: CourseTable.description,
+      sectionsCount: countDistinct(CourseSectionTable.id), // NOTE: countDistinct(column) counts how many unique (non-duplicate) values exist in that column. It’s just Drizzle’s way of writing SQL’s COUNT(DISTINCT column).
+      lessonsCount: countDistinct(LessonTable.id),
+      lessonsComplete: countDistinct(UserLessonCompleteTable.lessonId),
+    })
+    .from(CourseTable)
+    .leftJoin(
+      UserCourseAccessTable,
+      and(
+        eq(UserCourseAccessTable.courseId, CourseTable.id),
+        eq(UserCourseAccessTable.userId, userId),
+      ),
+    )
+    .leftJoin(
+      CourseSectionTable,
+      and(
+        eq(CourseSectionTable.courseId, CourseTable.id),
+        wherePublicCourseSections,
+      ),
+    )
+    .leftJoin(
+      LessonTable,
+      and(eq(LessonTable.sectionId, CourseSectionTable.id), wherePublicLessons),
+    )
+    .leftJoin(
+      UserLessonCompleteTable,
+      and(
+        eq(UserLessonCompleteTable.lessonId, LessonTable.id),
+        eq(UserLessonCompleteTable.userId, userId),
+      ),
+    )
+    .where(isNotNull(UserCourseAccessTable.courseId))
+    .orderBy(CourseTable.name)
+    .groupBy(CourseTable.id)
+
+  courses.forEach((course) => {
+    cacheTag(
+      getCourseIdTag(course.id),
+      getCourseSectionCourseTag(course.id),
+      getLessonCourseTag(course.id),
+    )
+  })
+
+  return courses
 }

@@ -1,0 +1,37 @@
+import PageHeader from "@/components/PageHeader"
+import { db } from "@/drizzle/db"
+import { getCourseIdTag } from "@/features/courses/db/cache/courses"
+import { cacheTag } from "next/cache"
+import { notFound } from "next/navigation"
+
+// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
+// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+export const instant = false
+
+export default async function CoursePage({
+  params,
+}: {
+  params: Promise<{ courseId: string }>
+}) {
+  const { courseId } = await params
+  const course = await getCourse(courseId)
+
+  if (course == null) return notFound()
+
+  return (
+    <div className="my-6 container">
+      <PageHeader className="mb-2" title={course.name} />
+      <p className="text-muted-foreground">{course.description}</p>
+    </div>
+  )
+}
+
+async function getCourse(id: string) {
+  "use cache"
+  cacheTag(getCourseIdTag(id))
+
+  return db.query.CourseTable.findFirst({
+    columns: { id: true, name: true, description: true },
+    where: { id },
+  })
+}
