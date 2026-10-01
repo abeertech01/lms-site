@@ -46,7 +46,7 @@ function Navbar() {
             }
           >
             <Link
-              href={"/products"}
+              href={"/all-products"}
               className="hidden md:flex items-center hover:bg-accent/10 px-2"
             >
               All Products
@@ -61,7 +61,7 @@ function Navbar() {
               href={"/purchases"}
               className="hidden md:flex items-center hover:bg-accent/10 px-2"
             >
-              Purchases History
+              Purchase History
             </Link>
             <Suspense fallback={null}>
               <UserMenuWithAdminCheck />

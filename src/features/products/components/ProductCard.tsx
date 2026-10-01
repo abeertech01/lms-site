@@ -28,7 +28,10 @@ export function ProductCard({
   lessonsCount: number
 }) {
   return (
-    <Link href={`/products/${id}`} className="block mx-auto w-full max-w-125">
+    <Link
+      href={`/all-products/${id}`}
+      className="block mx-auto w-full max-w-125"
+    >
       <Card className="flex flex-col hover:shadow-md size-full overflow-hidden transition-shadow">
         <div className="relative w-full aspect-video">
           <Image src={imageUrl} alt={name} fill className="object-cover" />
