@@ -13,6 +13,8 @@ import { wherePublicProducts } from "@/features/products/permissions/products"
 import { asc, countDistinct, eq } from "drizzle-orm"
 import { cacheTag } from "next/cache"
 
+export const instant = false
+
 export default async function AllProductsPage() {
   const products = await getPublicProducts()
 
