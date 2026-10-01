@@ -2,7 +2,6 @@ import { pgTable, primaryKey, uuid } from "drizzle-orm/pg-core"
 import { UserTable } from "./user"
 import { LessonTable } from "./lesson"
 import { createdAt, updatedAt } from "../schemaHelper"
-import { relations } from "drizzle-orm/_relations"
 
 export const UserLessonCompleteTable = pgTable(
   "user_lesson_complete",
@@ -17,18 +16,4 @@ export const UserLessonCompleteTable = pgTable(
     updatedAt,
   },
   (t) => [primaryKey({ columns: [t.userId, t.lessonId] })],
-)
-
-export const UserLessonCompleteRelationships = relations(
-  UserLessonCompleteTable,
-  ({ one }) => ({
-    user: one(UserTable, {
-      fields: [UserLessonCompleteTable.userId],
-      references: [UserTable.id],
-    }),
-    lesson: one(LessonTable, {
-      fields: [UserLessonCompleteTable.lessonId],
-      references: [LessonTable.id],
-    }),
-  }),
 )

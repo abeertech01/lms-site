@@ -9,7 +9,6 @@ import {
 import { createdAt, id, updatedAt } from "../schemaHelper"
 import { UserTable } from "./user"
 import { ProductTable } from "./product"
-import { relations } from "drizzle-orm/_relations"
 
 export const PurchaseTable = pgTable("purchases", {
   id,
@@ -36,14 +35,3 @@ export const PurchaseTable = pgTable("purchases", {
  * jsonb is a PostgreSQL data type that stores JSON data in a binary-optimized format, allowing for faster queries, indexing, and efficient storage. It's better than json in most cases.
  * Binary-optimized means PostgreSQL stores the JSON object in binary format.
  */
-
-export const PurchaseRelationships = relations(PurchaseTable, ({ one }) => ({
-  user: one(UserTable, {
-    fields: [PurchaseTable.userId],
-    references: [UserTable.id],
-  }),
-  product: one(ProductTable, {
-    fields: [PurchaseTable.productId],
-    references: [ProductTable.id],
-  }),
-}))

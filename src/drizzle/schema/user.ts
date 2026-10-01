@@ -1,7 +1,5 @@
 import { pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 import { createdAt, id, updatedAt } from "@/drizzle/schemaHelper"
-import { relations } from "drizzle-orm/_relations"
-import { UserCourseAccessTable } from "./userCourseAccess"
 
 export const userRoles = ["user", "admin"] as const
 export type UserRole = (typeof userRoles)[number]
@@ -22,7 +20,3 @@ export const UserTable = pgTable("users", {
  * deletedAt: timestamp({ withTimezone: true })
  * user stores the timestamp in its local time. But it's being stored in utc time.
  */
-
-export const UserRelationships = relations(UserTable, ({ many }) => ({
-  userCourseAccesses: many(UserCourseAccessTable),
-}))

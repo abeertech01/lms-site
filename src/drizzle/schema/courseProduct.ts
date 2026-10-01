@@ -2,7 +2,6 @@ import { pgTable, primaryKey, uuid } from "drizzle-orm/pg-core"
 import { CourseTable } from "./course"
 import { ProductTable } from "./product"
 import { createdAt, updatedAt } from "../schemaHelper"
-import { relations } from "drizzle-orm/_relations"
 
 export const CourseProductTable = pgTable(
   "course_products",
@@ -24,23 +23,4 @@ export const CourseProductTable = pgTable(
  *
  ** productId - { onDelete: "cascade" }
  * 'cascade' allows to delete CourseProduct record, when user deletes the related product.
- */
-
-export const CourseProductRelationships = relations(
-  CourseProductTable,
-  ({ one }) => ({
-    course: one(CourseTable, {
-      fields: [CourseProductTable.courseId],
-      references: [CourseTable.id],
-    }),
-    product: one(ProductTable, {
-      fields: [CourseProductTable.productId],
-      references: [ProductTable.id],
-    }),
-  }),
-)
-
-/** NOTE:
- * relations
- * Here it says - Every CourseProductTable record is related to single course and single product.
  */

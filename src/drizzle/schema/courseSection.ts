@@ -1,8 +1,6 @@
 import { integer, pgEnum, pgTable, text, uuid } from "drizzle-orm/pg-core"
 import { createdAt, id, updatedAt } from "../schemaHelper"
 import { CourseTable } from "./course"
-import { relations } from "drizzle-orm/_relations"
-import { LessonTable } from "./lesson"
 
 /** NOTE:
  * Course section - what is its use?
@@ -29,14 +27,3 @@ export const CourseSectionTable = pgTable("course_sections", {
   createdAt,
   updatedAt,
 })
-
-export const CourseSectionRelationships = relations(
-  CourseSectionTable,
-  ({ one, many }) => ({
-    course: one(CourseTable, {
-      fields: [CourseSectionTable.courseId],
-      references: [CourseTable.id],
-    }),
-    lessons: many(LessonTable),
-  }),
-)
