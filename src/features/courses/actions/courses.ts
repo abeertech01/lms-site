@@ -9,11 +9,7 @@ import {
   canDeleteCourses,
   canUpdateCourses,
 } from "../permissions/courses"
-import {
-  insertCourse,
-  deleteCourse as deleteCourseDB,
-  updateCourse as updateCourseDb,
-} from "../db/courses"
+import { insertCourse, deleteCourse as deleteCourseDB } from "../db/courses"
 
 export async function createCourse(unsafeData: z.infer<typeof courseSchema>) {
   const { success, data } = courseSchema.safeParse(unsafeData)
@@ -31,13 +27,11 @@ export async function updateCourse(
   id: string,
   unsafeData: z.infer<typeof courseSchema>,
 ) {
-  const { success, data } = courseSchema.safeParse(unsafeData)
+  const { success } = courseSchema.safeParse(unsafeData)
 
   if (!success || !canUpdateCourses(await getCurrentUser())) {
     return { error: true, message: "There was an error updating your course" }
   }
-
-  const course = await updateCourseDb(id, data)
 
   return { error: false, message: "Successfully updated your course" }
 }

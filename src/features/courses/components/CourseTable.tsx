@@ -13,7 +13,6 @@ import { Trash2Icon } from "lucide-react"
 import Link from "next/link"
 import { deleteCourse } from "../actions/courses"
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export default function CourseTable({
   courses,
 }: {

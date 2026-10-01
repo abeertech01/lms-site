@@ -42,7 +42,9 @@ export function SortableList<T extends { id: string }>({
         const newItems = move(optimisticItems, event)
         startTransition(async () => {
           setOptimisticItems(newItems)
-          const actionData = await onOrderChange(newItems.map((item) => item.id))
+          const actionData = await onOrderChange(
+            newItems.map((item) => item.id),
+          )
           actionToast({ actionData })
         })
       }}
@@ -78,7 +80,7 @@ export function SortableItem({
         ref={handleRef}
         className="p-1 size-6 text-muted-foreground"
       />
-      <div className={cn("flex-grow", className)}>{children}</div>
+      <div className={cn("grow", className)}>{children}</div>
     </div>
   )
 }

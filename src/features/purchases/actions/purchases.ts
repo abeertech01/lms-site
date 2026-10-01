@@ -1,6 +1,6 @@
 "use server"
 
-import { db, transaction } from "@/drizzle/db"
+import { transaction } from "@/drizzle/db"
 import { canRefundPurchases } from "../permissions/purchases"
 import { getCurrentUser } from "@/services/clerk"
 import { updatePurchase } from "../db/purchases"

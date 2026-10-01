@@ -16,7 +16,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { deleteProduct } from "../actions/products"
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export default function ProductTable({
   products,
 }: {

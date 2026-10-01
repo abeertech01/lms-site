@@ -1,6 +1,6 @@
 "use client"
 
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
@@ -46,7 +46,6 @@ export default function LessonForm({
     register,
     handleSubmit,
     control,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof lessonSchema>>({
     resolver: zodResolver(lessonSchema),
@@ -67,7 +66,7 @@ export default function LessonForm({
     if (!data.error) onSuccess?.()
   }
 
-  const videoId = watch("youtubeVideoId")
+  const videoId = useWatch({ control, name: "youtubeVideoId" })
 
   return (
     <form

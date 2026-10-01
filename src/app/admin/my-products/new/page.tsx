@@ -1,9 +1,7 @@
 import PageHeader from "@/components/PageHeader"
 import { db } from "@/drizzle/db"
-import { CourseTable } from "@/drizzle/schema"
 import { getCourseGlobalTag } from "@/features/courses/db/cache/courses"
 import ProductForm from "@/features/products/components/ProductForm"
-import { asc } from "drizzle-orm"
 import { cacheTag } from "next/cache"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
