@@ -25,7 +25,8 @@ export default async function AllProductsPage() {
         <Eyebrow>All products</Eyebrow>
         <div className="flex flex-wrap justify-between items-end gap-8 mt-3.5">
           <h1 className="font-semibold text-[clamp(44px,6vw,80px)] leading-[0.95] tracking-[-0.045em] text-balance">
-            Pick what you&apos;ll <span className="text-accent">build next.</span>
+            Pick what you&apos;ll{" "}
+            <span className="text-accent">build next.</span>
           </h1>
           <p className="max-w-105 text-[18px] text-muted-foreground leading-[1.55]">
             Self-paced, project-based courses. Pay once, keep access for good.

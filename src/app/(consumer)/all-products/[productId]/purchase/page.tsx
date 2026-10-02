@@ -1,5 +1,4 @@
 import { LoadingSpinner } from "@/components/LoadingSpinner"
-import PageHeader from "@/components/PageHeader"
 import { db } from "@/drizzle/db"
 import { getProductIdTag } from "@/features/products/db/cache"
 import {
@@ -11,7 +10,9 @@ import { StripeCheckoutForm } from "@/services/stripe/components/StripeCheckoutF
 import { SignIn, SignUp } from "@clerk/nextjs"
 import { cacheTag } from "next/cache"
 import { notFound, redirect } from "next/navigation"
+import Link from "next/link"
 import { Suspense } from "react"
+import { Eyebrow } from "../../../_landing/Eyebrow"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
@@ -54,9 +55,19 @@ async function SuspendedComponent({
     }
 
     return (
-      <div className="my-6 container">
+      <section className="mx-auto px-6 pt-9 pb-27.5 w-full max-w-310">
+        <Link
+          href={`/all-products/${productId}`}
+          className="text-[13px] text-ink-soft hover:text-accent transition-colors"
+        >
+          ← {product.name}
+        </Link>
+        <Eyebrow className="mt-5.5">Checkout</Eyebrow>
+        <h1 className="mt-2.5 mb-8 font-semibold text-[clamp(32px,4vw,48px)] leading-none tracking-[-0.045em]">
+          Complete your <span className="text-accent">purchase.</span>
+        </h1>
         <StripeCheckoutForm product={product} user={user} />
-      </div>
+      </section>
     )
   }
 
@@ -64,8 +75,12 @@ async function SuspendedComponent({
   const isSignUp = authMode === "signUp"
 
   return (
-    <div className="flex flex-col items-center my-6 container">
-      <PageHeader title="You need an account to make a purchase" />
+    <section className="flex flex-col items-center mx-auto px-6 pt-14 pb-27.5 w-full max-w-310">
+      <Eyebrow>Checkout</Eyebrow>
+      <h1 className="mt-3 mb-8 font-semibold text-[clamp(32px,4vw,48px)] leading-none tracking-[-0.045em] text-center text-balance">
+        You need an <span className="text-accent">account</span> to make a
+        purchase
+      </h1>
       {isSignUp ? (
         <SignUp
           routing="hash"
@@ -79,7 +94,7 @@ async function SuspendedComponent({
           forceRedirectUrl={`/all-products/${productId}/purchase`}
         />
       )}
-    </div>
+    </section>
   )
 }
 
