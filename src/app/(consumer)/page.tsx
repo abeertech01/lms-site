@@ -1,35 +1,29 @@
 import { Suspense } from "react"
 import { HeroSection } from "./HeroSection"
-import { ProductSection, ProductSectionSkeleton } from "./ProductSection"
+import { Marquee } from "./_landing/Marquee"
 import {
-  getLatestProducts,
-  getMostPurchasedProducts,
-} from "@/features/products/db/products"
+  CatalogSection,
+  CatalogSectionSkeleton,
+} from "./_landing/CatalogSection"
+import { HowItWorksSection } from "./_landing/HowItWorksSection"
+import { InsideSection } from "./_landing/InsideSection"
+import { TestimonialsSection } from "./_landing/TestimonialsSection"
+import { FaqSection } from "./_landing/FaqSection"
+import { CtaSection } from "./_landing/CtaSection"
 
 export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <Suspense
-        fallback={<ProductSectionSkeleton heading="Most Popular" amount={4} />}
-      >
-        <MostPopularSection />
+      <Marquee />
+      <Suspense fallback={<CatalogSectionSkeleton />}>
+        <CatalogSection />
       </Suspense>
-      <Suspense
-        fallback={<ProductSectionSkeleton heading="Newly Added" amount={4} />}
-      >
-        <NewlyAddedSection />
-      </Suspense>
+      <HowItWorksSection />
+      <InsideSection />
+      <TestimonialsSection />
+      <FaqSection />
+      <CtaSection />
     </>
   )
-}
-
-async function MostPopularSection() {
-  const products = await getMostPurchasedProducts(4)
-  return <ProductSection heading="Most Popular" products={products} />
-}
-
-async function NewlyAddedSection() {
-  const products = await getLatestProducts(4)
-  return <ProductSection heading="Newly Added" products={products} />
 }
