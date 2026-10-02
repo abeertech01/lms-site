@@ -1,5 +1,3 @@
-import PageHeader from "@/components/PageHeader"
-import { Button } from "@/components/ui/button"
 import { db } from "@/drizzle/db"
 import {
   CourseProductTable,
@@ -11,20 +9,31 @@ import { getProductGlobalTag } from "@/features/products/db/cache"
 import { asc, countDistinct, eq } from "drizzle-orm"
 import { cacheTag } from "next/cache"
 import Link from "next/link"
+import { Eyebrow } from "../../(consumer)/_landing/Eyebrow"
 
 export default async function MyProductsPage() {
   const products = await getProducts()
 
   return (
-    <div className="my-6 container">
-      <PageHeader title="My Products">
-        <Button>
-          <Link href={"/admin/my-products/new"}>New Product</Link>
-        </Button>
-      </PageHeader>
-
-      <ProductTable products={products} />
-    </div>
+    <>
+      <section className="mx-auto px-6 pt-14 w-full max-w-310 animate-rise">
+        <Eyebrow>Admin</Eyebrow>
+        <div className="flex flex-wrap justify-between items-end gap-8 mt-3.5">
+          <h1 className="font-semibold text-[clamp(44px,6vw,80px)] leading-[0.95] tracking-[-0.045em]">
+            My products<span className="text-accent">.</span>
+          </h1>
+          <Link
+            href="/admin/my-products/new"
+            className="bg-primary px-6 py-3.5 rounded-full font-medium text-[15px] text-primary-foreground hover:text-white whitespace-nowrap transition-colors hover:bg-accent"
+          >
+            + New product
+          </Link>
+        </div>
+      </section>
+      <section className="mx-auto px-6 pt-10 pb-27.5 w-full max-w-310">
+        <ProductTable products={products} />
+      </section>
+    </>
   )
 }
 

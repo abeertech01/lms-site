@@ -6,6 +6,14 @@
 @config "../../tailwind.config.ts";
 
 @theme inline {
+  --color-lime: var(--lime);
+  --color-violet-soft: var(--violet-soft);
+  --color-violet-line: var(--violet-line);
+  --color-ink-soft: var(--ink-soft);
+  --color-line-strong: var(--line-strong);
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-rise: rise 0.7s ease both;
+  --animate-pop: pop 0.6s ease both;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -47,25 +55,31 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(55.06% 0.2599 309.84);
-  --accent-foreground: oklch(98.51% 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
+  /* TripleA brand extras (from the design) */
+  --lime: #c8f25a;
+  --violet-soft: #eeeafe;
+  --violet-line: #d9d2fb;
+  --ink-soft: #8a857a;
+  --line-strong: #cfcabd;
+  --background: #f5f3ee;
+  --foreground: #17150f;
+  --card: #ffffff;
+  --card-foreground: #17150f;
+  --popover: #ffffff;
+  --popover-foreground: #17150f;
+  --primary: #17150f;
+  --primary-foreground: #f5f3ee;
+  --secondary: #eeebe3;
+  --secondary-foreground: #17150f;
+  --muted: #eeebe3;
+  --muted-foreground: #5e5a52;
+  --accent: #5b3df5;
+  --accent-foreground: #ffffff;
+  --destructive: #c2261b;
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: #e3dfd5;
+  --input: #e3dfd5;
+  --ring: #5b3df5;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -77,7 +91,7 @@
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-border: #e3dfd5;
   --sidebar-ring: oklch(0.708 0 0);
 }
 
@@ -87,5 +101,51 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-marquee,
+  .animate-pop,
+  .animate-rise {
+    animation: none;
   }
 }

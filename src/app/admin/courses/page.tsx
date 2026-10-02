@@ -1,10 +1,9 @@
-import PageHeader from "@/components/PageHeader"
-import { Button } from "@/components/ui/button"
 import { db } from "@/drizzle/db"
 import CourseTable from "@/features/courses/components/CourseTable"
 import { getCourseGlobalTag } from "@/features/courses/db/cache/courses"
 import { cacheTag } from "next/cache"
 import Link from "next/link"
+import { Eyebrow } from "../../(consumer)/_landing/Eyebrow"
 import {
   CourseSectionTable,
   CourseTable as DbCourseTable,
@@ -24,15 +23,25 @@ export default async function CoursesPage() {
   const courses = await getCourses()
 
   return (
-    <div className="my-6 container">
-      <PageHeader title="Courses">
-        <Button>
-          <Link href={"/admin/courses/new"}>New Courses</Link>
-        </Button>
-      </PageHeader>
-
-      <CourseTable courses={courses} />
-    </div>
+    <>
+      <section className="mx-auto px-6 pt-14 w-full max-w-310 animate-rise">
+        <Eyebrow>Admin</Eyebrow>
+        <div className="flex flex-wrap justify-between items-end gap-8 mt-3.5">
+          <h1 className="font-semibold text-[clamp(44px,6vw,80px)] leading-[0.95] tracking-[-0.045em]">
+            Courses<span className="text-accent">.</span>
+          </h1>
+          <Link
+            href="/admin/courses/new"
+            className="bg-primary px-6 py-3.5 rounded-full font-medium text-[15px] text-primary-foreground hover:text-white whitespace-nowrap transition-colors hover:bg-accent"
+          >
+            + New course
+          </Link>
+        </div>
+      </section>
+      <section className="mx-auto px-6 pt-10 pb-27.5 w-full max-w-310">
+        <CourseTable courses={courses} />
+      </section>
+    </>
   )
 }
 

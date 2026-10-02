@@ -35,7 +35,7 @@ export function UserMenu({ isAdmin }: { isAdmin: boolean }) {
       <UserButton.MenuItems>
         {isMobile && (
           <UserButton.Link
-            href="/products"
+            href="/all-products"
             label="All Products"
             labelIcon={<LayoutGridIcon className="size-4" />}
           />

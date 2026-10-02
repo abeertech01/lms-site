@@ -1,21 +1,10 @@
-import {
-  SkeletonArray,
-  SkeletonButton,
-  SkeletonText,
-} from "@/components/Skeleton"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { SkeletonArray, SkeletonText } from "@/components/Skeleton"
 import { formatDate, formatPrice } from "@/lib/formatters"
 import Image from "next/image"
 import Link from "next/link"
+
+const rowClass =
+  "gap-4 grid grid-cols-[minmax(0,1fr)_auto_auto] md:grid-cols-[minmax(0,1fr)_110px_120px] items-center px-5 md:px-7"
 
 export function UserPurchaseTable({
   purchases,
@@ -32,88 +21,84 @@ export function UserPurchaseTable({
   }[]
 }) {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Product</TableHead>
-          <TableHead>Amount</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
+    <div className="bg-card border rounded-[22px] overflow-hidden">
+      <div
+        className={`${rowClass} py-4 border-b font-mono text-[11px] text-ink-soft uppercase tracking-[0.06em]`}
+      >
+        <span>Product</span>
+        <span>Amount</span>
+        <span className="text-right">Actions</span>
+      </div>
+      <ul>
         {purchases.map((purchase) => (
-          <TableRow key={purchase.id}>
-            <TableCell>
-              <div className="flex items-center gap-4">
-                <Image
-                  className="rounded size-12 object-cover"
-                  src={purchase.productDetails.imageUrl}
-                  alt={purchase.productDetails.name}
-                  width={192}
-                  height={192}
-                />
-                <div className="flex flex-col gap-1">
-                  <div className="font-semibold">
-                    {purchase.productDetails.name}
-                  </div>
-                  <div className="text-muted-foreground">
-                    {formatDate(purchase.createdAt)}
-                  </div>
+          <li
+            key={purchase.id}
+            className={`${rowClass} py-3.5 border-b last:border-b-0`}
+          >
+            <div className="flex items-center gap-3.5 min-w-0">
+              <Image
+                className="rounded-xl border size-13 object-cover shrink-0"
+                src={purchase.productDetails.imageUrl}
+                alt={purchase.productDetails.name}
+                width={192}
+                height={192}
+              />
+              <div className="min-w-0">
+                <div className="font-semibold text-[15px] tracking-[-0.01em]">
+                  {purchase.productDetails.name}
+                </div>
+                <div className="mt-0.75 text-[13px] text-ink-soft">
+                  {formatDate(purchase.createdAt)}
                 </div>
               </div>
-            </TableCell>
-            <TableCell>
+            </div>
+            <span className="font-medium text-[15px]">
               {purchase.refundedAt ? (
-                <Badge variant={"outline"}>Refunded</Badge>
+                <span className="px-3 py-1 border border-line-strong rounded-full text-[13px] text-muted-foreground">
+                  Refunded
+                </span>
               ) : (
                 formatPrice(purchase.pricePaidInCents / 100)
               )}
-            </TableCell>
-            <TableCell>
-              <Button
-                variant={"outline"}
-                nativeButton={false}
-                render={<Link href={`/purchases/${purchase.id}`}>Details</Link>}
-              />
-            </TableCell>
-          </TableRow>
+            </span>
+            <div className="text-right">
+              <Link
+                href={`/purchases/${purchase.id}`}
+                className="inline-block px-4 py-1.75 border border-line-strong hover:border-foreground rounded-full font-medium text-[13px] hover:text-background transition-colors hover:bg-foreground"
+              >
+                Details
+              </Link>
+            </div>
+          </li>
         ))}
-      </TableBody>
-    </Table>
+      </ul>
+    </div>
   )
 }
 
 export function UserPurchaseTableSkeleton() {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Product</TableHead>
-          <TableHead>Amount</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <SkeletonArray amount={3}>
-          <TableRow>
-            <TableCell>
-              <div className="flex items-center gap-4">
-                <div className="bg-secondary rounded size-12 animate-pulse" />
-                <div className="flex flex-col gap-1">
-                  <SkeletonText className="w-36" />
-                  <SkeletonText className="w-3/4" />
-                </div>
-              </div>
-            </TableCell>
-            <TableCell>
-              <SkeletonText className="w-12" />
-            </TableCell>
-            <TableCell>
-              <SkeletonButton />
-            </TableCell>
-          </TableRow>
-        </SkeletonArray>
-      </TableBody>
-    </Table>
+    <div className="bg-card border rounded-[22px] overflow-hidden">
+      <div
+        className={`${rowClass} py-4 border-b font-mono text-[11px] text-ink-soft uppercase tracking-[0.06em]`}
+      >
+        <span>Product</span>
+        <span>Amount</span>
+        <span className="text-right">Actions</span>
+      </div>
+      <SkeletonArray amount={3}>
+        <div className={`${rowClass} py-3.5 border-b last:border-b-0`}>
+          <div className="flex items-center gap-3.5">
+            <div className="bg-secondary rounded-xl size-13 animate-pulse shrink-0" />
+            <div className="flex flex-col gap-1">
+              <SkeletonText className="w-36" />
+              <SkeletonText className="w-3/4" />
+            </div>
+          </div>
+          <SkeletonText className="w-12" />
+          <div className="bg-secondary rounded-full w-16 h-8 animate-pulse" />
+        </div>
+      </SkeletonArray>
+    </div>
   )
 }

@@ -41,7 +41,7 @@ export default function CourseForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       <Field data-invalid={errors.name != null}>
         <FieldLabel htmlFor="name">
           <RequiredLabelIcon />
@@ -57,7 +57,7 @@ export default function CourseForm({
         </FieldLabel>
         <Textarea
           id="description"
-          className="min-h-20 resize-none"
+          className="min-h-24 resize-y"
           {...register("description")}
         />
         <FieldError
@@ -65,7 +65,12 @@ export default function CourseForm({
         />
       </Field>
       <div className="self-end">
-        <Button disabled={isSubmitting} type="submit">
+        <Button
+          size="lg"
+          disabled={isSubmitting}
+          type="submit"
+          className="px-8"
+        >
           Save
         </Button>
       </div>

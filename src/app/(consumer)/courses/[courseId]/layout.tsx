@@ -29,15 +29,15 @@ export default async function CoursePageLayout({
   if (course == null) return notFound()
 
   return (
-    <div className="gap-8 grid grid-cols-1 md:grid-cols-[300px_1fr] container">
-      <div className="py-4 min-w-0">
+    <div className="items-start gap-8 grid grid-cols-1 md:grid-cols-[300px_1fr] mx-auto px-6 pt-8 pb-12 max-w-310">
+      <aside className="md:top-21 md:sticky bg-card p-5 border rounded-[22px] min-w-0">
         <Suspense
           fallback={<CoursePageClient course={mapCourse(course, [])} />}
         >
           <SuspenseBoundary course={course} />
         </Suspense>
-      </div>
-      <div className="py-4 min-w-0">{children}</div>
+      </aside>
+      <div className="min-w-0">{children}</div>
     </div>
   )
 }

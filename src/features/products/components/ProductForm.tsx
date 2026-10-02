@@ -64,8 +64,8 @@ export default function ProductForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-      <div className="items-start gap-6 grid grid-cols-1 md:grid-cols-2">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <div className="items-start gap-x-5 gap-y-4 grid grid-cols-1 md:grid-cols-2">
         <Field data-invalid={errors.name != null}>
           <FieldLabel htmlFor="name">
             <RequiredLabelIcon />
@@ -168,7 +168,7 @@ export default function ProductForm({
         </FieldLabel>
         <Textarea
           id="description"
-          className="min-h-20 resize-none"
+          className="min-h-24 resize-y"
           {...register("description")}
         />
         <FieldError
@@ -176,7 +176,12 @@ export default function ProductForm({
         />
       </Field>
       <div className="self-end">
-        <Button disabled={isSubmitting} type="submit">
+        <Button
+          size="lg"
+          disabled={isSubmitting}
+          type="submit"
+          className="px-8"
+        >
           Save
         </Button>
       </div>
