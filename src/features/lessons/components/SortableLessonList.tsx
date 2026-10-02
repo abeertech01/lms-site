@@ -34,32 +34,26 @@ export function SortableLessonList({
           <SortableItem
             key={lesson.id}
             id={lesson.id}
-            className="flex items-center gap-1"
+            className="flex items-center gap-3.5"
           >
-            <div
+            <span
               className={cn(
-                "contents",
+                "flex flex-1 items-center gap-2 min-w-0 text-[15px]",
                 lesson.status === "private" && "text-muted-foreground",
               )}
             >
               {lesson.status === "private" && <EyeClosed className="size-4" />}
               {lesson.status === "preview" && <VideoIcon className="size-4" />}
               {lesson.name}
-            </div>
+            </span>
             <LessonFormDialog lesson={lesson} sections={sections}>
-              <DialogTrigger
-                render={
-                  <Button variant={"outline"} size={"sm"} className="ml-auto">
-                    Edit
-                  </Button>
-                }
-              />
+              <DialogTrigger render={<Button size={"sm"}>Edit</Button>} />
             </LessonFormDialog>
             <ActionButton
               action={deleteLesson.bind(null, lesson.id)}
               requireAreYouSure
               variant={"destructiveOutline"}
-              size={"sm"}
+              size={"icon-sm"}
             >
               <Trash2Icon />
               <span className="sr-only">Delete</span>

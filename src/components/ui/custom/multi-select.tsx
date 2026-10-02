@@ -49,7 +49,7 @@ export function MultiSelect<Option>({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="justify-between hover:bg-background px-2 py-1.5 w-full h-auto min-h-9"
+            className="justify-between hover:bg-background px-3 py-2 border-[1.5px] border-input rounded-[14px] w-full h-auto min-h-12 font-normal text-base hover:text-foreground"
           />
         }
       >
@@ -60,7 +60,11 @@ export function MultiSelect<Option>({
               if (option == null) return null
 
               return (
-                <Badge key={getValue(option)} variant={"outline"}>
+                <Badge
+                  key={getValue(option)}
+                  variant={"outline"}
+                  className="bg-card rounded-full"
+                >
                   {getLabel(option)}
                 </Badge>
               )

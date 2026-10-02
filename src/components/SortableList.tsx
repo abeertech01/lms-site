@@ -72,13 +72,13 @@ export function SortableItem({
     <div
       ref={ref}
       className={cn(
-        "flex items-center gap-1 bg-background p-2 rounded-lg",
-        isDragging && "z-10 border shadow-md",
+        "flex items-center gap-3.5 py-3 border-[#f3f0e9] border-b last:border-b-0",
+        isDragging && "z-10 bg-card rounded-xl border shadow-md px-3",
       )}
     >
       <GripVerticalIcon
         ref={handleRef}
-        className="p-1 size-6 text-muted-foreground"
+        className="size-5 text-[#b9b4a6] cursor-grab shrink-0"
       />
       <div className={cn("grow", className)}>{children}</div>
     </div>

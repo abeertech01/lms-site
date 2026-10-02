@@ -1,20 +1,15 @@
 import ActionButton from "@/components/ActionButton"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { ProductStatus } from "@/drizzle/schema"
 import { formatPlural, formatPrice } from "@/lib/formatters"
+import { cn } from "@/lib/utils"
 import { EyeIcon, LockIcon, Trash2Icon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { deleteProduct } from "../actions/products"
+
+const rowClass =
+  "gap-4 grid grid-cols-[minmax(0,1fr)_auto_auto] md:grid-cols-[minmax(0,1fr)_80px_120px_170px] items-center px-5 md:px-7"
 
 export default function ProductTable({
   products,
@@ -31,86 +26,99 @@ export default function ProductTable({
   }[]
 }) {
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>
-            {formatPlural(products.length, {
-              singular: "product",
-              plural: "products",
-            })}
-          </TableHead>
-          <TableHead>Students</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
+    <div className="bg-card border rounded-[22px] overflow-hidden">
+      <div
+        className={`${rowClass} py-4 border-b font-mono text-[11px] text-ink-soft uppercase tracking-[0.06em]`}
+      >
+        <span>
+          {formatPlural(products.length, {
+            singular: "product",
+            plural: "products",
+          })}
+        </span>
+        <span className="hidden md:block">Students</span>
+        <span className="hidden md:block">Visibility</span>
+        <span className="col-span-2 md:col-span-1 text-right">Actions</span>
+      </div>
+      <ul>
         {products.map((product) => (
-          <TableRow key={product.id}>
-            <TableCell>
-              <div className="flex items-center gap-4">
-                <Image
-                  className="rounded size-12 object-cover"
-                  src={product.imageUrl}
-                  alt={product.name}
-                  width={192}
-                  height={192}
-                />
-                <div className="flex flex-col gap-1">
-                  <div className="font-semibold">{product.name}</div>
-                  <div className="text-muted-foreground">
-                    {formatPlural(product.coursesCount, {
-                      singular: "course",
-                      plural: "courses",
-                    })}{" "}
-                    • {formatPrice(product.priceInDollars)}
-                  </div>
+          <li
+            key={product.id}
+            className={`${rowClass} py-3 border-b last:border-b-0`}
+          >
+            <div className="flex items-center gap-3.5 min-w-0">
+              <Image
+                className="rounded-xl border size-13 object-cover shrink-0"
+                src={product.imageUrl}
+                alt={product.name}
+                width={192}
+                height={192}
+              />
+              <div className="min-w-0">
+                <div className="font-semibold text-[15px] tracking-[-0.01em]">
+                  {product.name}
+                </div>
+                <div className="mt-0.75 text-[13px] text-ink-soft">
+                  {formatPlural(product.coursesCount, {
+                    singular: "course",
+                    plural: "courses",
+                  })}{" "}
+                  · {formatPrice(product.priceInDollars)}
                 </div>
               </div>
-            </TableCell>
-            <TableCell>{product.customersCount}</TableCell>
-            <TableCell>
-              <Badge className="inline-flex items-center gap-2">
+            </div>
+            <span className="hidden md:block font-medium text-[15px]">
+              {product.customersCount}
+            </span>
+            <div className="hidden md:block">
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1.5 px-3 py-1.25 rounded-full font-medium text-[13px] capitalize",
+                  product.status === "public"
+                    ? "bg-lime text-foreground"
+                    : "border border-line-strong text-muted-foreground",
+                )}
+              >
                 {getStatusIcon(product.status)} {product.status}
-              </Badge>
-            </TableCell>
-            <TableCell>
-              <div className="flex gap-2">
-                <Button
-                  nativeButton={false}
-                  render={
-                    <Link href={`/admin/my-products/${product.id}/edit`}>
-                      Edit
-                    </Link>
-                  }
-                />
-                {/** NOTE:
-                 * action={deleteProduct.bind(null, product.id)}
-                 * ActionButton's `action` prop expects a function with no
-                 * arguments that returns a Promise<{ error, message }>.
-                 * bind() hands each button its own deleteProduct with this
-                 * product's id already filled in, without calling it yet.
-                 *
-                 * deleteProduct(product.id) would run the delete during render.
-                 * ActionButton has no onClick prop (it is omitted from its
-                 * props), because it runs `action` itself inside a transition,
-                 * shows a loading state, confirms with requireAreYouSure and
-                 * shows the result toast.
-                 */}
-                <ActionButton
-                  variant={"destructiveOutline"}
-                  requireAreYouSure
-                  action={deleteProduct.bind(null, product.id)}
-                >
-                  <Trash2Icon />
-                  <span className="sr-only">Delete</span>
-                </ActionButton>
-              </div>
-            </TableCell>
-          </TableRow>
+              </span>
+            </div>
+            <div className="col-span-2 md:col-span-1 flex justify-end items-center gap-2">
+              <Button
+                size="sm"
+                nativeButton={false}
+                render={
+                  <Link href={`/admin/my-products/${product.id}/edit`}>
+                    Edit
+                  </Link>
+                }
+              />
+              {/** NOTE:
+               * action={deleteProduct.bind(null, product.id)}
+               * ActionButton's `action` prop expects a function with no
+               * arguments that returns a Promise<{ error, message }>.
+               * bind() hands each button its own deleteProduct with this
+               * product's id already filled in, without calling it yet.
+               *
+               * deleteProduct(product.id) would run the delete during render.
+               * ActionButton has no onClick prop (it is omitted from its
+               * props), because it runs `action` itself inside a transition,
+               * shows a loading state, confirms with requireAreYouSure and
+               * shows the result toast.
+               */}
+              <ActionButton
+                variant={"destructiveOutline"}
+                size={"icon"}
+                requireAreYouSure
+                action={deleteProduct.bind(null, product.id)}
+              >
+                <Trash2Icon />
+                <span className="sr-only">Delete</span>
+              </ActionButton>
+            </div>
+          </li>
         ))}
-      </TableBody>
-    </Table>
+      </ul>
+    </div>
   )
 }
 
@@ -120,5 +128,5 @@ function getStatusIcon(status: ProductStatus) {
     private: LockIcon,
   }[status]
 
-  return <Icon className="size-4" />
+  return <Icon className="size-3.5" />
 }

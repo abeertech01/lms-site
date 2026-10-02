@@ -1,6 +1,4 @@
-import PageHeader from "@/components/PageHeader"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DialogTrigger } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { db } from "@/drizzle/db"
@@ -13,9 +11,11 @@ import LessonFormDialog from "@/features/lessons/components/LessonFormDialog"
 import { SortableLessonList } from "@/features/lessons/components/SortableLessonList"
 import { getLessonCourseTag } from "@/features/lessons/db/cache/lessons"
 import { cn } from "@/lib/utils"
-import { EyeClosed, PlusIcon } from "lucide-react"
+import { EyeClosed } from "lucide-react"
 import { cacheTag } from "next/cache"
+import Link from "next/link"
 import { notFound } from "next/navigation"
+import { Eyebrow } from "../../../../(consumer)/_landing/Eyebrow"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
@@ -31,75 +31,89 @@ export default async function EditCoursePage({
 
   if (course == null) return notFound()
 
+  const sections = course.courseSections.map((section) => ({
+    ...section,
+    lessonsCount: section.lessons.length,
+  }))
+
   return (
-    <div className="my-6 container">
-      <PageHeader title={course.name} />
-      <Tabs defaultValue="lessons">
+    <div className="mx-auto px-6 pt-9 pb-27.5 w-full max-w-310">
+      <div className="animate-rise">
+        <Link
+          href="/admin/courses"
+          className="text-[13px] text-ink-soft hover:text-accent transition-colors"
+        >
+          ← Courses
+        </Link>
+        <Eyebrow className="mt-5.5">Edit course</Eyebrow>
+        <h1 className="mt-3 font-semibold text-[clamp(40px,5.4vw,68px)] leading-[0.98] tracking-[-0.045em]">
+          {course.name}
+        </h1>
+      </div>
+      <Tabs defaultValue="lessons" className="mt-7 gap-6">
         <TabsList>
           <TabsTrigger value="lessons">Lessons</TabsTrigger>
           <TabsTrigger value="details">Details</TabsTrigger>
         </TabsList>
-        <TabsContent value="lessons" className="flex flex-col gap-2">
-          <Card>
-            <CardHeader className="flex flex-row justify-between items-center">
-              <CardTitle>Sections</CardTitle>
+        <TabsContent value="lessons" className="flex flex-col gap-5">
+          <div className="bg-card px-7 pt-2 pb-3 border rounded-[22px]">
+            <div className="flex justify-between items-center gap-4 pt-4.5 pb-3.5 border-b">
+              <h2 className="font-semibold text-lg tracking-[-0.02em]">
+                Sections
+              </h2>
               <SectionFormDialog courseId={course.id}>
                 <DialogTrigger
                   render={
-                    <Button variant={"outline"}>
-                      <PlusIcon /> New Section
+                    <Button variant={"outline"} size={"sm"}>
+                      + New section
                     </Button>
                   }
                 />
               </SectionFormDialog>
-            </CardHeader>
-            <CardContent>
-              <SortableSectionList
-                courseId={course.id}
-                sections={course.courseSections}
-              />
-            </CardContent>
-          </Card>
-          <hr className="my-2" />
+            </div>
+            <SortableSectionList courseId={course.id} sections={sections} />
+          </div>
           {course.courseSections.map((section) => (
-            <Card key={section.id}>
-              <CardHeader className="flex flex-row justify-between items-center gap-4">
-                <CardTitle
+            <div
+              key={section.id}
+              className="bg-card px-7 pt-2 pb-3 border rounded-[22px]"
+            >
+              <div className="flex justify-between items-center gap-4 pt-4.5 pb-3.5 border-b">
+                <h2
                   className={cn(
-                    "flex items-center gap-2",
+                    "flex items-center gap-2 font-semibold text-lg tracking-[-0.02em]",
                     section.status === "private" && "text-muted-foreground",
                   )}
                 >
-                  {section.status === "private" && <EyeClosed />} {section.name}
-                </CardTitle>
+                  {section.status === "private" && (
+                    <EyeClosed className="size-4" />
+                  )}
+                  {section.name}
+                </h2>
                 <LessonFormDialog
                   defaultSectionId={section.id}
                   sections={course.courseSections}
                 >
                   <DialogTrigger
                     render={
-                      <Button variant={"outline"}>
-                        <PlusIcon /> New Lesson
+                      <Button variant={"outline"} size={"sm"}>
+                        + New lesson
                       </Button>
                     }
                   />
                 </LessonFormDialog>
-              </CardHeader>
-              <CardContent>
-                <SortableLessonList
-                  sections={course.courseSections}
-                  lessons={section.lessons}
-                />
-              </CardContent>
-            </Card>
+              </div>
+              <SortableLessonList
+                sections={course.courseSections}
+                lessons={section.lessons}
+              />
+            </div>
           ))}
         </TabsContent>
         <TabsContent value="details">
-          <Card>
-            <CardHeader>
-              <CourseForm course={course} />
-            </CardHeader>
-          </Card>
+          <div className="bg-card px-7.5 py-7.5 border rounded-[22px] max-w-190">
+            <CourseForm course={course} />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

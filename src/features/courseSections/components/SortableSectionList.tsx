@@ -2,6 +2,7 @@
 
 import { SortableItem, SortableList } from "@/components/SortableList"
 import { CourseSectionStatus } from "@/drizzle/schema"
+import { formatPlural } from "@/lib/formatters"
 import { cn } from "@/lib/utils"
 import { EyeClosed, Trash2Icon } from "lucide-react"
 import SectionFormDialog from "./SectionFormDialog"
@@ -19,6 +20,7 @@ export function SortableSectionList({
     id: string
     name: string
     status: CourseSectionStatus
+    lessonsCount?: number
   }[]
 }) {
   return (
@@ -28,31 +30,33 @@ export function SortableSectionList({
           <SortableItem
             key={section.id}
             id={section.id}
-            className="flex items-center gap-1"
+            className="flex items-center gap-3.5"
           >
-            <div
+            <span
               className={cn(
-                "contents",
+                "flex flex-1 items-center gap-2 min-w-0 font-medium text-[15px]",
                 section.status === "private" && "text-muted-foreground",
               )}
             >
               {section.status === "private" && <EyeClosed className="size-4" />}
               {section.name}
-            </div>
+            </span>
+            {section.lessonsCount != null && (
+              <span className="font-mono text-[11px] text-ink-soft uppercase whitespace-nowrap">
+                {formatPlural(section.lessonsCount, {
+                  singular: "lesson",
+                  plural: "lessons",
+                })}
+              </span>
+            )}
             <SectionFormDialog section={section} courseId={courseId}>
-              <DialogTrigger
-                render={
-                  <Button variant={"outline"} size={"sm"} className="ml-auto">
-                    Edit
-                  </Button>
-                }
-              />
+              <DialogTrigger render={<Button size={"sm"}>Edit</Button>} />
             </SectionFormDialog>
             <ActionButton
               action={deleteSection.bind(null, section.id)}
               requireAreYouSure
               variant={"destructiveOutline"}
-              size={"sm"}
+              size={"icon-sm"}
             >
               <Trash2Icon />
               <span className="sr-only">Delete</span>
