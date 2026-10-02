@@ -1,5 +1,6 @@
 import { db } from "@/drizzle/db"
-import { auth } from "@clerk/nextjs/server"
+import type { UserRole } from "@/drizzle/schema"
+import { auth, clerkClient } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 
 export async function getCurrentUser({ allData = false } = {}) {
@@ -28,6 +29,22 @@ export async function getCurrentUser({ allData = false } = {}) {
     user: allData ? user : undefined,
     redirectToSignIn,
   }
+}
+
+// NOTE: stores the DB id + role on the Clerk user, so they show up in the
+// session token (sessionClaims.role is what the admin layout checks).
+export async function syncClerkUserMetadata(user: {
+  id: string
+  clerkUserId: string
+  role: UserRole
+}) {
+  const client = await clerkClient()
+  return client.users.updateUserMetadata(user.clerkUserId, {
+    publicMetadata: {
+      dbId: user.id,
+      role: user.role,
+    },
+  })
 }
 
 async function getUserByClerkId(clerkUserId: string) {
