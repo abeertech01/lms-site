@@ -82,7 +82,9 @@ async function Price({ price }: { price: number }) {
           {formatPrice(price)}
         </span>
       </div>
-      <span className="font-mono text-[11px] text-accent">Regional pricing</span>
+      <span className="font-mono text-[11px] text-accent">
+        Regional pricing
+      </span>
     </PriceBlock>
   )
 }

@@ -1,15 +1,4 @@
 import { LoadingSpinner } from "@/components/LoadingSpinner"
-import PageHeader from "@/components/PageHeader"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { db } from "@/drizzle/db"
 import { getPurchaseIdTag } from "@/features/purchases/db/cache"
 import { formatDate, formatPrice } from "@/lib/formatters"
@@ -19,7 +8,7 @@ import { stripeServerClient } from "@/services/stripe/stripeServer"
 import { cacheTag } from "next/cache"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { Fragment, Suspense } from "react"
+import { Suspense } from "react"
 import Stripe from "stripe"
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
@@ -34,7 +23,7 @@ export default async function PurchasePage({
   const { purchaseId } = await params
 
   return (
-    <div className="my-6 container">
+    <div className="mx-auto px-6 pt-10 pb-27.5 w-full max-w-310 animate-rise">
       <Suspense fallback={<LoadingSpinner className="mx-auto size-36" />}>
         <SuspenseBoundary purchaseId={purchaseId} />
       </Suspense>
@@ -58,64 +47,113 @@ async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
     purchase.refundedAt != null,
   )
 
+  // NOTE: like the design, the last word of the product name is highlighted ("AI/ML Engineering").
+  const nameWords = purchase.productDetails.name.split(" ")
+  const lastWord = nameWords.length > 1 ? nameWords.pop() : null
+
   return (
     <>
-      <PageHeader title={purchase.productDetails.name}>
+      <Link
+        href="/purchases"
+        className="text-[13px] text-ink-soft hover:text-accent transition-colors"
+      >
+        ← Purchase history
+      </Link>
+      <div className="flex flex-wrap justify-between items-center gap-6 mt-6">
+        <h1 className="font-semibold text-[clamp(40px,5vw,68px)] leading-[0.98] tracking-[-0.045em]">
+          {nameWords.join(" ")}
+          {lastWord != null && (
+            <>
+              {" "}
+              <span className="text-accent">{lastWord}</span>
+            </>
+          )}
+        </h1>
         {receiptUrl && (
-          <Button
-            variant={"outline"}
-            nativeButton={false}
-            render={
-              <Link target="_blank" href={receiptUrl}>
-                View Receipt
-              </Link>
-            }
-          />
+          <Link
+            target="_blank"
+            href={receiptUrl}
+            className="px-5.5 py-2.75 border border-foreground rounded-full font-medium text-sm hover:text-background whitespace-nowrap transition-colors hover:bg-foreground"
+          >
+            View receipt ↗
+          </Link>
         )}
-      </PageHeader>
+      </div>
 
-      <Card>
-        <CardHeader className="pb-4">
-          <div className="flex justify-between items-start gap-4">
-            <div className="flex flex-col gap-1">
-              <CardTitle>Receipt</CardTitle>
-              <CardDescription>ID: {purchaseId}</CardDescription>
+      <div className="bg-card mt-11 border rounded-3xl max-w-230 overflow-hidden">
+        <div className="flex flex-wrap justify-between items-center gap-4 px-9 py-7 border-b">
+          <div className="min-w-0">
+            <div className="font-semibold text-[22px] tracking-[-0.02em]">
+              Receipt
             </div>
-            <Badge className="text-base">
-              {purchase.refundedAt ? "Refunded" : "Paid"}
-            </Badge>
+            <div className="mt-1.5 font-mono text-ink-soft text-xs break-all">
+              ID: {purchaseId}
+            </div>
           </div>
-        </CardHeader>
-        <CardContent className="gap-8 grid grid-cols-2 pt-4 pb-4 border-t">
-          <div>
-            <label className="text-muted-foreground text-sm">Date</label>
-            <div>{formatDate(purchase.createdAt)}</div>
-          </div>
-          <div>
-            <label className="text-muted-foreground text-sm">Product</label>
-            <div>{purchase.productDetails.name}</div>
-          </div>
-          <div>
-            <label className="text-muted-foreground text-sm">Customer</label>
-            <div>{user.name}</div>
-          </div>
-          <div>
-            <label className="text-muted-foreground text-sm">Seller</label>
-            <div>Triple A</div>
-          </div>
-        </CardContent>
-        <CardFooter className="gap-x-8 gap-y-4 grid grid-cols-2 pt-4 border-t">
-          {pricingRows.map(({ label, amountInDollars, isBold }) => (
-            <Fragment key={label}>
-              <div className={cn(isBold && "font-bold")}>{label}</div>
-              <div className={cn("justify-self-end", isBold && "font-bold")}>
-                {formatPrice(amountInDollars, { showZeroAsNumber: true })}
+          <span
+            className={cn(
+              "px-4.5 py-2 rounded-full font-semibold text-sm",
+              purchase.refundedAt
+                ? "border border-line-strong text-muted-foreground"
+                : "bg-lime",
+            )}
+          >
+            {purchase.refundedAt ? "Refunded" : "Paid"}
+          </span>
+        </div>
+
+        <dl className="gap-x-10 gap-y-8 grid grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] px-9 py-8 border-b">
+          <ReceiptField label="Date" value={formatDate(purchase.createdAt)} />
+          <ReceiptField label="Product" value={purchase.productDetails.name} />
+          <ReceiptField label="Customer" value={user.name} />
+          <ReceiptField label="Seller" value="Triple A" />
+        </dl>
+
+        <div className="flex flex-col gap-4.5 px-9 py-7">
+          {pricingRows.map(({ label, amountInDollars, isBold }) => {
+            const isRefund = label === "Refund"
+            const isDiscount = !isBold && !isRefund && amountInDollars < 0
+
+            return isBold ? (
+              <div
+                key={label}
+                className="flex justify-between items-baseline gap-4 pt-5 border-foreground border-t"
+              >
+                <span className="font-semibold text-[19px]">{label}</span>
+                <span className="font-semibold text-4xl tracking-[-0.03em]">
+                  {formatPrice(amountInDollars, { showZeroAsNumber: true })}
+                </span>
               </div>
-            </Fragment>
-          ))}
-        </CardFooter>
-      </Card>
+            ) : (
+              <div
+                key={label}
+                className={cn(
+                  "flex justify-between gap-4 text-[17px]",
+                  isDiscount && "text-accent",
+                  isRefund && "text-destructive",
+                )}
+              >
+                <span>{label}</span>
+                <span>
+                  {formatPrice(amountInDollars, { showZeroAsNumber: true })}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     </>
+  )
+}
+
+function ReceiptField({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="font-mono text-[11px] text-ink-soft uppercase tracking-[0.08em]">
+        {label}
+      </dt>
+      <dd className="mt-2 font-medium text-[18px]">{value}</dd>
+    </div>
   )
 }
 
