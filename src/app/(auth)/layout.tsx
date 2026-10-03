@@ -11,13 +11,16 @@ export default async function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="relative flex flex-col justify-center items-center px-4 py-12 min-h-screen overflow-hidden">
+    <div className="relative flex flex-col justify-center items-center px-4 py-12 min-h-screen overflow-hidden max-[720px]:min-h-dvh max-[720px]:py-8">
       <div
         aria-hidden
         className="-z-10 absolute inset-0 bg-[radial-gradient(ellipse_80%_55%_at_50%_-10%,var(--color-violet-100),transparent)] dark:bg-[radial-gradient(ellipse_80%_55%_at_50%_-10%,var(--color-violet-950),transparent)]"
       />
 
-      <Link href="/" className="flex flex-col items-center gap-3 mb-8">
+      <Link
+        href="/"
+        className="flex flex-col items-center gap-3 mb-8 max-[720px]:mb-6"
+      >
         <div className="flex items-center bg-violet-100 dark:bg-violet-950 rounded-xl">
           <Image
             src="/triplea-logo.png"
@@ -34,7 +37,7 @@ export default async function AuthLayout({
 
       <Link
         href="/"
-        className="mt-8 text-muted-foreground hover:text-foreground text-sm transition-colors"
+        className="mt-8 max-[720px]:mt-6 text-muted-foreground hover:text-foreground text-sm transition-colors"
       >
         ← Back to home
       </Link>

@@ -69,7 +69,7 @@ export default function CourseForm({
           size="lg"
           disabled={isSubmitting}
           type="submit"
-          className="px-8"
+          className="px-8 max-[720px]:h-11"
         >
           Save
         </Button>

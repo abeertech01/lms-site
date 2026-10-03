@@ -9,7 +9,7 @@ import Link from "next/link"
 import { deleteProduct } from "../actions/products"
 
 const rowClass =
-  "gap-4 grid grid-cols-[minmax(0,1fr)_auto_auto] md:grid-cols-[minmax(0,1fr)_80px_120px_170px] items-center px-5 md:px-7"
+  "gap-4 grid grid-cols-[minmax(0,1fr)_auto_auto] max-[720px]:grid-cols-[auto_minmax(0,1fr)] max-[720px]:gap-x-3.5 max-[720px]:gap-y-3 max-[720px]:p-4 md:grid-cols-[minmax(0,1fr)_80px_120px_170px] items-center px-5 md:px-7"
 
 export default function ProductTable({
   products,
@@ -28,7 +28,7 @@ export default function ProductTable({
   return (
     <div className="bg-card border rounded-[22px] overflow-hidden">
       <div
-        className={`${rowClass} py-4 border-b font-mono text-[11px] text-ink-soft uppercase tracking-[0.06em]`}
+        className={`${rowClass} py-4 max-[720px]:hidden border-b font-mono text-[11px] text-ink-soft uppercase tracking-[0.06em]`}
       >
         <span>
           {formatPlural(products.length, {
@@ -46,7 +46,7 @@ export default function ProductTable({
             key={product.id}
             className={`${rowClass} py-3 border-b last:border-b-0`}
           >
-            <div className="flex items-center gap-3.5 min-w-0">
+            <div className="flex items-center gap-3.5 max-[720px]:col-span-full min-w-0">
               <Image
                 className="rounded-xl border size-13 object-cover shrink-0"
                 src={product.imageUrl}
@@ -67,10 +67,13 @@ export default function ProductTable({
                 </div>
               </div>
             </div>
-            <span className="hidden md:block font-medium text-[15px]">
+            <span className="hidden md:block max-[720px]:block max-[720px]:text-sm max-[720px]:font-normal max-[720px]:text-muted-foreground font-medium text-[15px]">
               {product.customersCount}
+              <span className="hidden max-[720px]:inline">
+                {product.customersCount === 1 ? " student" : " students"}
+              </span>
             </span>
-            <div className="hidden md:block">
+            <div className="hidden md:block max-[720px]:block max-[720px]:justify-self-end">
               <span
                 className={cn(
                   "inline-flex items-center gap-1.5 px-3 py-1.25 rounded-full font-medium text-[13px] capitalize",
@@ -82,9 +85,10 @@ export default function ProductTable({
                 {getStatusIcon(product.status)} {product.status}
               </span>
             </div>
-            <div className="col-span-2 md:col-span-1 flex justify-end items-center gap-2">
+            <div className="col-span-2 md:col-span-1 max-[720px]:col-span-full flex max-[720px]:flex-wrap justify-end max-[720px]:justify-start items-center gap-2">
               <Button
                 size="sm"
+                className="max-[720px]:h-11 max-[720px]:min-w-20 max-[720px]:justify-center"
                 nativeButton={false}
                 render={
                   <Link href={`/admin/my-products/${product.id}/edit`}>

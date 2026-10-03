@@ -102,7 +102,7 @@ export function MultiSelect<Option>({
                 >
                   <Check
                     className={cn(
-                      "mr-2 w-4 h-4",
+                      "mr-2 w-4 h-4 text-accent",
                       selectedValues.includes(getValue(option))
                         ? "opacity-100"
                         : "opacity-0",

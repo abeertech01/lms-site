@@ -19,7 +19,7 @@ export function HowItWorksSection() {
   return (
     <section
       id="how"
-      className="mx-auto px-6 py-27.5 w-full max-w-310 scroll-mt-16"
+      className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 py-27.5 w-full max-w-310 scroll-mt-16"
     >
       <Eyebrow>02 — How it works</Eyebrow>
       <h2 className="mt-3.5 max-w-195 font-semibold text-[clamp(38px,4.6vw,60px)] leading-none tracking-[-0.04em]">
@@ -30,7 +30,7 @@ export function HowItWorksSection() {
         {steps.map((step, i) => (
           <li
             key={step.title}
-            className="px-0 md:px-8 py-8 md:first:pl-0 md:last:pr-0 md:not-last:border-r"
+            className="px-0 md:px-8 py-8 max-[720px]:py-6 max-[720px]:border-b max-[720px]:last:border-b-0 md:first:pl-0 md:last:pr-0 md:not-last:border-r"
           >
             <div className="font-mono font-medium text-accent text-[44px] leading-none tracking-[-0.04em]">
               {String(i + 1).padStart(2, "0")}

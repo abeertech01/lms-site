@@ -6,7 +6,7 @@ import z from "zod"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import RequiredLabelIcon from "@/components/RequiredLabelIcon"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { FormDialogBody, FormDialogFooter } from "@/components/FormDialogParts"
 import { actionToast } from "@/hooks/use-toast"
 import { CourseSectionStatus, courseSectionStatuses } from "@/drizzle/schema"
 import { sectionSchema } from "../schemas/sections"
@@ -58,14 +58,9 @@ export default function SectionForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="@container flex flex-col gap-6"
+      className="flex flex-col flex-1 min-h-0"
     >
-      {/* NOTE:
-       * @container and @lg
-       * @container makes the element 1024px wide.
-       * normally lg works based on viewport. But @lg works based on its parent. So, @lg activates when its parent is 1024px or large.
-       */}
-      <div className="gap-6 grid grid-cols-1 @lg:grid-cols-2">
+      <FormDialogBody>
         <Field data-invalid={errors.name != null}>
           <FieldLabel htmlFor="name">
             <RequiredLabelIcon />
@@ -81,7 +76,7 @@ export default function SectionForm({
             name="status"
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="status">
+                <SelectTrigger id="status" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -96,12 +91,8 @@ export default function SectionForm({
           />
           <FieldError errors={errors.status ? [errors.status] : undefined} />
         </Field>
-      </div>
-      <div className="self-end">
-        <Button disabled={isSubmitting} type="submit">
-          Save
-        </Button>
-      </div>
+      </FormDialogBody>
+      <FormDialogFooter isSubmitting={isSubmitting} />
     </form>
   )
 }

@@ -25,8 +25,8 @@ export async function Footer() {
   const year = await getCurrentYear()
 
   return (
-    <footer className="mx-auto px-6 pt-14 pb-10 w-full max-w-310">
-      <div className="flex flex-wrap justify-between gap-10">
+    <footer className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-14 pb-10 w-full max-w-310">
+      <div className="flex flex-wrap justify-between gap-10 max-[720px]:flex-col max-[720px]:items-start">
         <div className="max-w-75">
           <Image
             src="/triplea-logo.png"
@@ -58,7 +58,7 @@ export async function Footer() {
           ))}
         </div>
       </div>
-      <div className="flex flex-wrap justify-between gap-4 mt-14 pt-6 border-t text-[13px] text-ink-soft">
+      <div className="flex flex-wrap justify-between gap-4 max-[720px]:flex-col max-[720px]:items-start mt-14 pt-6 border-t text-[13px] text-ink-soft">
         <span>© {year} TripleA. All rights reserved.</span>
         <span className="font-mono">Learn · Apply · Achieve</span>
       </div>

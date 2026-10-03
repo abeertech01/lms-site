@@ -33,7 +33,7 @@ export function FaqSection() {
   return (
     <section
       id="faq"
-      className="gap-14 grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] mx-auto px-6 pt-10 pb-27.5 w-full max-w-310 scroll-mt-16"
+      className="gap-14 grid grid-cols-[repeat(auto-fit,minmax(min(100%,380px),1fr))] mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-10 pb-27.5 w-full max-w-310 scroll-mt-16"
     >
       <div>
         <Eyebrow>05 — FAQ</Eyebrow>

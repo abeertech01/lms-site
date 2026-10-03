@@ -12,7 +12,7 @@ const reasons = [
 
 export default async function ProductPurchaseFailurePage() {
   return (
-    <section className="items-center gap-14 grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] mx-auto px-6 pt-20 pb-27.5 w-full max-w-310">
+    <section className="items-center gap-14 grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-20 pb-27.5 w-full max-w-310">
       <div className="animate-rise">
         <div className="place-items-center grid bg-destructive/15 rounded-full size-16 font-semibold text-[28px] text-destructive animate-pop">
           !
@@ -20,7 +20,7 @@ export default async function ProductPurchaseFailurePage() {
         <div className="mt-8 font-mono text-destructive text-xs uppercase tracking-[0.08em]">
           Payment not completed
         </div>
-        <h1 className="mt-3.5 font-semibold text-[clamp(44px,6vw,84px)] leading-[0.95] tracking-[-0.045em] text-balance">
+        <h1 className="mt-3.5 font-semibold text-[clamp(44px,6vw,84px)] leading-[0.95] tracking-[-0.045em] text-balance max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
           Purchase <span className="text-destructive">failed.</span>
         </h1>
         <p className="mt-5.5 max-w-120 text-[19px] text-muted-foreground leading-[1.55]">

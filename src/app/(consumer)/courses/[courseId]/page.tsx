@@ -28,7 +28,7 @@ export default async function CoursePage({
       <div className="font-mono text-accent text-xs uppercase tracking-[0.08em]">
         Course
       </div>
-      <h1 className="mt-2.5 font-semibold text-[clamp(28px,3.4vw,44px)] leading-[1.05] tracking-[-0.04em] text-balance">
+      <h1 className="mt-2.5 font-semibold text-[clamp(28px,3.4vw,44px)] leading-[1.05] tracking-[-0.04em] text-balance max-[720px]:text-[clamp(20px,6vw,26px)] max-[720px]:leading-[1.2] max-[720px]:tracking-[-0.025em]">
         {course.name}
       </h1>
       <p className="mt-5 max-w-170 text-[18px] text-muted-foreground leading-[1.55] text-pretty">

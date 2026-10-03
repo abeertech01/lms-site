@@ -34,11 +34,11 @@ export function SortableLessonList({
           <SortableItem
             key={lesson.id}
             id={lesson.id}
-            className="flex items-center gap-3.5"
+            className="flex items-center gap-3.5 max-[720px]:flex-wrap max-[720px]:gap-x-2.5 max-[720px]:gap-y-2"
           >
             <span
               className={cn(
-                "flex flex-1 items-center gap-2 min-w-0 text-[15px]",
+                "flex flex-1 items-center gap-2 max-[720px]:flex-[1_1_120px] min-w-0 text-[15px]",
                 lesson.status === "private" && "text-muted-foreground",
               )}
             >
@@ -46,18 +46,26 @@ export function SortableLessonList({
               {lesson.status === "preview" && <VideoIcon className="size-4" />}
               {lesson.name}
             </span>
-            <LessonFormDialog lesson={lesson} sections={sections}>
-              <DialogTrigger render={<Button size={"sm"}>Edit</Button>} />
-            </LessonFormDialog>
-            <ActionButton
-              action={deleteLesson.bind(null, lesson.id)}
-              requireAreYouSure
-              variant={"destructiveOutline"}
-              size={"icon-sm"}
-            >
-              <Trash2Icon />
-              <span className="sr-only">Delete</span>
-            </ActionButton>
+            <div className="flex items-center gap-3.5 max-[720px]:ml-auto max-[720px]:gap-2">
+              <LessonFormDialog lesson={lesson} sections={sections}>
+                <DialogTrigger
+                  render={
+                    <Button size={"sm"} className="max-[720px]:h-11">
+                      Edit
+                    </Button>
+                  }
+                />
+              </LessonFormDialog>
+              <ActionButton
+                action={deleteLesson.bind(null, lesson.id)}
+                requireAreYouSure
+                variant={"destructiveOutline"}
+                size={"icon-sm"}
+              >
+                <Trash2Icon />
+                <span className="sr-only">Delete</span>
+              </ActionButton>
+            </div>
           </SortableItem>
         ))
       }

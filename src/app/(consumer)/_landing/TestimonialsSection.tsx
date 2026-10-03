@@ -4,10 +4,10 @@ import { Eyebrow } from "./Eyebrow"
 // testimonials (or remove this section) before relying on it in production.
 export function TestimonialsSection() {
   return (
-    <section className="mx-auto px-6 py-27.5 w-full max-w-310">
+    <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 py-27.5 w-full max-w-310">
       <Eyebrow>04 — From learners</Eyebrow>
       <div className="gap-6 grid grid-cols-1 md:grid-cols-3 mt-9">
-        <figure className="flex flex-col justify-between gap-10 bg-violet-soft p-7 md:p-11 rounded-[22px] md:col-span-2 min-w-0">
+        <figure className="flex flex-col justify-between gap-10 bg-violet-soft p-7 max-[720px]:px-5.5 md:p-11 rounded-[22px] md:col-span-2 min-w-0">
           <blockquote className="font-medium text-[clamp(26px,2.8vw,36px)] leading-[1.2] tracking-[-0.025em] text-pretty">
             “I&apos;d watched hours of tutorials and built nothing. Two weeks
             into the Node.js course I had an API running in production.”
@@ -18,7 +18,7 @@ export function TestimonialsSection() {
             tone="violet"
           />
         </figure>
-        <figure className="flex flex-col justify-between gap-8 bg-card p-7 md:p-9 border rounded-[22px] min-w-0">
+        <figure className="flex flex-col justify-between gap-8 bg-card p-7 max-[720px]:px-5.5 md:p-9 border rounded-[22px] min-w-0">
           <blockquote className="text-[18px] leading-normal text-pretty">
             “The AI/ML course explains the math without drowning you in it.
             Finally clicked for me.”

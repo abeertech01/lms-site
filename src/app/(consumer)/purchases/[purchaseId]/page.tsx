@@ -23,7 +23,7 @@ export default async function PurchasePage({
   const { purchaseId } = await params
 
   return (
-    <div className="mx-auto px-6 pt-10 pb-27.5 w-full max-w-310 animate-rise">
+    <div className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-10 pb-27.5 w-full max-w-310 animate-rise">
       <Suspense fallback={<LoadingSpinner className="mx-auto size-36" />}>
         <SuspenseBoundary purchaseId={purchaseId} />
       </Suspense>
@@ -60,7 +60,7 @@ async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
         ← Purchase history
       </Link>
       <div className="flex flex-wrap justify-between items-center gap-6 mt-6">
-        <h1 className="font-semibold text-[clamp(40px,5vw,68px)] leading-[0.98] tracking-[-0.045em]">
+        <h1 className="font-semibold text-[clamp(40px,5vw,68px)] leading-[0.98] tracking-[-0.045em] max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
           {nameWords.join(" ")}
           {lastWord != null && (
             <>
@@ -73,7 +73,7 @@ async function SuspenseBoundary({ purchaseId }: { purchaseId: string }) {
           <Link
             target="_blank"
             href={receiptUrl}
-            className="px-5.5 py-2.75 border border-foreground rounded-full font-medium text-sm hover:text-background whitespace-nowrap transition-colors hover:bg-foreground"
+            className="px-5.5 py-2.75 max-[720px]:min-h-11 max-[720px]:inline-flex max-[720px]:items-center max-[720px]:justify-center border border-foreground rounded-full font-medium text-sm hover:text-background whitespace-nowrap transition-colors hover:bg-foreground"
           >
             View receipt ↗
           </Link>

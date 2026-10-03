@@ -14,10 +14,10 @@ export default async function PurchasesPage() {
 
   return (
     <>
-      <section className="mx-auto px-6 pt-14 w-full max-w-310 animate-rise">
+      <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-14 max-[720px]:pt-8 w-full max-w-310 animate-rise">
         <Eyebrow>Admin</Eyebrow>
         <div className="flex flex-wrap justify-between items-end gap-8 mt-3.5">
-          <h1 className="font-semibold text-[clamp(44px,6vw,80px)] leading-[0.95] tracking-[-0.045em]">
+          <h1 className="font-semibold text-[clamp(44px,6vw,80px)] leading-[0.95] tracking-[-0.045em] max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
             Sales<span className="text-accent">.</span>
           </h1>
           <p className="max-w-95 text-[18px] text-muted-foreground leading-[1.55]">
@@ -25,7 +25,7 @@ export default async function PurchasesPage() {
           </p>
         </div>
       </section>
-      <section className="mx-auto px-6 pt-10 pb-27.5 w-full max-w-310">
+      <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-10 pb-27.5 w-full max-w-310">
         <PurchaseTable purchases={purchases} />
       </section>
     </>

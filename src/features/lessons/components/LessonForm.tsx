@@ -6,7 +6,6 @@ import z from "zod"
 import { Field, FieldError, FieldLabel } from "@/components/ui/field"
 import RequiredLabelIcon from "@/components/RequiredLabelIcon"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { actionToast } from "@/hooks/use-toast"
 import { LessonStatus, lessonStatuses } from "@/drizzle/schema"
 import {
@@ -19,7 +18,7 @@ import {
 import { lessonSchema } from "../schemas/lessons"
 import { Textarea } from "@/components/ui/textarea"
 import { createLesson, updateLesson } from "../actions/lessons"
-import { YouTubeVideoPlayer } from "./YouTubeVideoPlayer"
+import { FormDialogBody, FormDialogFooter } from "@/components/FormDialogParts"
 
 export default function LessonForm({
   sections,
@@ -71,14 +70,9 @@ export default function LessonForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="@container flex flex-col gap-6"
+      className="flex flex-col flex-1 min-h-0"
     >
-      {/* NOTE:
-       * @container and @lg
-       * @container makes the element 1024px wide.
-       * normally lg works based on viewport. But @lg works based on its parent. So, @lg activates when its parent is 1024px or large.
-       */}
-      <div className="gap-6 grid grid-cols-1 @lg:grid-cols-2">
+      <FormDialogBody>
         <Field data-invalid={errors.name != null}>
           <FieldLabel htmlFor="name">
             <RequiredLabelIcon />
@@ -104,7 +98,7 @@ export default function LessonForm({
             name="sectionId"
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="sectionId">
+                <SelectTrigger id="sectionId" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -128,7 +122,7 @@ export default function LessonForm({
             name="status"
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="status">
+                <SelectTrigger id="status" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -143,28 +137,32 @@ export default function LessonForm({
           />
           <FieldError errors={errors.status ? [errors.status] : undefined} />
         </Field>
-      </div>
-      <Field data-invalid={errors.description != null}>
-        <FieldLabel htmlFor="description">Description</FieldLabel>
-        <Textarea
-          id="description"
-          className="min-h-20 resize-none"
-          {...register("description")}
-        />
-        <FieldError
-          errors={errors.description ? [errors.description] : undefined}
-        />
-      </Field>
-      <div className="self-end">
-        <Button disabled={isSubmitting} type="submit">
-          Save
-        </Button>
-      </div>
-      {videoId && (
-        <div className="aspect-video">
-          <YouTubeVideoPlayer videoId={videoId} />
-        </div>
-      )}
+        <Field data-invalid={errors.description != null}>
+          <FieldLabel htmlFor="description">Description</FieldLabel>
+          <Textarea
+            id="description"
+            className="min-h-28 resize-y"
+            {...register("description")}
+          />
+          <FieldError
+            errors={errors.description ? [errors.description] : undefined}
+          />
+        </Field>
+        {/* NOTE: a still of the video, like the design (the old form embedded the full player). */}
+        {videoId && (
+          <div className="bg-[repeating-linear-gradient(135deg,#ECE8DF_0_8px,#E4DFD4_8px_16px)] rounded-[14px] aspect-video overflow-hidden shrink-0">
+            <div
+              role="img"
+              aria-label="Video thumbnail"
+              className="bg-cover bg-center size-full"
+              style={{
+                backgroundImage: `url(https://img.youtube.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg)`,
+              }}
+            />
+          </div>
+        )}
+      </FormDialogBody>
+      <FormDialogFooter isSubmitting={isSubmitting} />
     </form>
   )
 }

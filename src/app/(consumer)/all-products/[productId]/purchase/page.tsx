@@ -55,7 +55,7 @@ async function SuspendedComponent({
     }
 
     return (
-      <section className="mx-auto px-6 pt-9 pb-27.5 w-full max-w-310">
+      <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-9 pb-27.5 w-full max-w-310">
         <Link
           href={`/all-products/${productId}`}
           className="text-[13px] text-ink-soft hover:text-accent transition-colors"
@@ -63,7 +63,7 @@ async function SuspendedComponent({
           ← {product.name}
         </Link>
         <Eyebrow className="mt-5.5">Checkout</Eyebrow>
-        <h1 className="mt-2.5 mb-8 font-semibold text-[clamp(32px,4vw,48px)] leading-none tracking-[-0.045em]">
+        <h1 className="mt-2.5 mb-8 font-semibold text-[clamp(32px,4vw,48px)] leading-none tracking-[-0.045em] max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
           Complete your <span className="text-accent">purchase.</span>
         </h1>
         <StripeCheckoutForm product={product} user={user} />
@@ -75,9 +75,9 @@ async function SuspendedComponent({
   const isSignUp = authMode === "signUp"
 
   return (
-    <section className="flex flex-col items-center mx-auto px-6 pt-14 pb-27.5 w-full max-w-310">
+    <section className="flex flex-col items-center mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-14 pb-27.5 w-full max-w-310">
       <Eyebrow>Checkout</Eyebrow>
-      <h1 className="mt-3 mb-8 font-semibold text-[clamp(32px,4vw,48px)] leading-none tracking-[-0.045em] text-center text-balance">
+      <h1 className="mt-3 mb-8 font-semibold text-[clamp(32px,4vw,48px)] leading-none tracking-[-0.045em] text-center text-balance max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
         You need an <span className="text-accent">account</span> to make a
         purchase
       </h1>

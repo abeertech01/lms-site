@@ -27,7 +27,7 @@ export function CatalogTabs({
   return (
     <section
       id="courses"
-      className="mx-auto px-6 pt-27.5 pb-10 w-full max-w-310 scroll-mt-16"
+      className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-27.5 pb-10 w-full max-w-310 scroll-mt-16"
     >
       <div className="flex flex-wrap justify-between items-end gap-6">
         {heading}

@@ -1,11 +1,10 @@
 "use client"
 
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+  FormDialogHeader,
+  formDialogContentClass,
+} from "@/components/FormDialogParts"
 import { LessonStatus } from "@/drizzle/schema"
 import { ReactNode, useState } from "react"
 import LessonForm from "./LessonForm"
@@ -33,20 +32,16 @@ export default function LessonFormDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       {children}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {lesson == null ? "New Lesson" : `Edit ${lesson.name}`}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="mt-4">
-          <LessonForm
-            sections={sections}
-            onSuccess={() => setIsOpen(false)}
-            lesson={lesson}
-            defaultSectionId={defaultSectionId}
-          />
-        </div>
+      <DialogContent showCloseButton={false} className={formDialogContentClass}>
+        <FormDialogHeader
+          title={lesson == null ? "New Lesson" : `Edit ${lesson.name}`}
+        />
+        <LessonForm
+          sections={sections}
+          onSuccess={() => setIsOpen(false)}
+          lesson={lesson}
+          defaultSectionId={defaultSectionId}
+        />
       </DialogContent>
     </Dialog>
   )
