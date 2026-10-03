@@ -1,11 +1,10 @@
 "use client"
 
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+  FormDialogHeader,
+  formDialogContentClass,
+} from "@/components/FormDialogParts"
 import { CourseSectionStatus } from "@/drizzle/schema"
 import { ReactNode, useState } from "react"
 import SectionForm from "./SectionForm"
@@ -24,19 +23,15 @@ export default function SectionFormDialog({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       {children}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {section == null ? "New Section" : `Edit ${section.name}`}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="mt-4">
-          <SectionForm
-            section={section}
-            courseId={courseId}
-            onSuccess={() => setIsOpen(false)}
-          />
-        </div>
+      <DialogContent showCloseButton={false} className={formDialogContentClass}>
+        <FormDialogHeader
+          title={section == null ? "New Section" : `Edit ${section.name}`}
+        />
+        <SectionForm
+          section={section}
+          courseId={courseId}
+          onSuccess={() => setIsOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   )

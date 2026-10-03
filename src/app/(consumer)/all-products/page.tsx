@@ -21,10 +21,10 @@ export default async function AllProductsPage() {
 
   return (
     <>
-      <section className="mx-auto px-6 pt-18 w-full max-w-310 animate-rise">
+      <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-18 max-[720px]:pt-10 w-full max-w-310 animate-rise">
         <Eyebrow>All products</Eyebrow>
         <div className="flex flex-wrap justify-between items-end gap-8 mt-3.5">
-          <h1 className="font-semibold text-[clamp(44px,6vw,80px)] leading-[0.95] tracking-[-0.045em] text-balance">
+          <h1 className="font-semibold text-[clamp(44px,6vw,80px)] leading-[0.95] tracking-[-0.045em] text-balance max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
             Pick what you&apos;ll{" "}
             <span className="text-accent">build next.</span>
           </h1>
@@ -34,7 +34,7 @@ export default async function AllProductsPage() {
         </div>
       </section>
 
-      <section className="mx-auto px-6 pt-12 w-full max-w-310">
+      <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-12 w-full max-w-310">
         {products.length === 0 ? (
           <p className="py-16 border-t border-foreground text-muted-foreground">
             No products yet — check back soon.
@@ -55,7 +55,7 @@ export default async function AllProductsPage() {
 
 function FairPricingSection() {
   return (
-    <section className="mx-auto px-6 pt-24 pb-27.5 w-full max-w-310">
+    <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-24 pb-27.5 w-full max-w-310">
       <div className="gap-10 grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] bg-foreground p-[clamp(32px,5vw,64px)] rounded-[28px] text-background">
         <div>
           <Eyebrow className="text-lime">Fair pricing</Eyebrow>

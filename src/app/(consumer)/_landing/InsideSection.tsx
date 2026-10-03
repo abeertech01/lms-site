@@ -26,7 +26,7 @@ const features = [
 export function InsideSection() {
   return (
     <section id="inside" className="bg-foreground text-background scroll-mt-16">
-      <div className="mx-auto px-6 py-27.5 max-w-310">
+      <div className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 py-27.5 max-w-310">
         <div className="items-end gap-14 grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))]">
           <div>
             <Eyebrow className="text-lime">03 — What&apos;s inside</Eyebrow>

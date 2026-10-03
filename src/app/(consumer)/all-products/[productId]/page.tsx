@@ -48,7 +48,7 @@ export default async function ProductPage({
 
   return (
     <>
-      <section className="mx-auto px-6 pt-9 w-full max-w-310 animate-rise">
+      <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-9 w-full max-w-310 animate-rise">
         <nav
           aria-label="Breadcrumb"
           className="flex items-center gap-2 text-[13px] text-ink-soft"
@@ -62,7 +62,7 @@ export default async function ProductPage({
 
         <div className="items-center gap-12 grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] mt-9">
           <div>
-            <h1 className="font-semibold text-[clamp(42px,5.6vw,76px)] leading-[0.95] tracking-[-0.045em] text-balance">
+            <h1 className="font-semibold text-[clamp(42px,5.6vw,76px)] leading-[0.95] tracking-[-0.045em] text-balance max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
               {nameWords.join(" ")}
               {lastWord != null && (
                 <>
@@ -124,7 +124,7 @@ export default async function ProductPage({
         </div>
       </section>
 
-      <section className="mx-auto px-6 pt-18 w-full max-w-310">
+      <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-18 w-full max-w-310">
         <div className="items-start gap-10 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="min-w-0">
             <Eyebrow>Curriculum</Eyebrow>
@@ -178,7 +178,7 @@ export default async function ProductPage({
         </div>
       </section>
 
-      <section className="mx-auto px-6 pt-24 pb-27.5 w-full max-w-310">
+      <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-24 pb-27.5 w-full max-w-310">
         <div className="flex flex-wrap justify-between items-center gap-5 px-8 py-7 border-[1.5px] border-line-strong border-dashed rounded-[22px]">
           <div>
             <div className="font-semibold text-xl tracking-[-0.02em]">

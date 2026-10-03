@@ -29,10 +29,10 @@ export default async function AdminPage() {
   } = await getPurchaseDetails()
 
   return (
-    <div className="mx-auto px-6 pt-7 pb-27.5 w-full max-w-310">
+    <div className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-7 pb-27.5 w-full max-w-310">
       <section className="animate-rise">
         <Eyebrow>Dashboard</Eyebrow>
-        <h1 className="mt-2 font-semibold text-[44px] leading-none tracking-[-0.045em]">
+        <h1 className="mt-2 font-semibold text-[44px] leading-none tracking-[-0.045em] max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
           Overview<span className="text-accent">.</span>
         </h1>
       </section>

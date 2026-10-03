@@ -29,7 +29,7 @@ const navLinkClass =
 function Navbar() {
   return (
     <header className="top-0 z-20 sticky bg-background/85 backdrop-blur-md border-b">
-      <nav className="flex items-center gap-4 mx-auto px-6 py-3.5 w-full max-w-310">
+      <nav className="flex items-center gap-4 mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 py-3.5 max-[720px]:py-2.5 max-[720px]:gap-3 w-full max-w-310">
         <Link className="flex items-center shrink-0" href="/">
           <Image
             src="/triplea-logo.png"

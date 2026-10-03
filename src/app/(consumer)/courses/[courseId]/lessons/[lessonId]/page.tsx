@@ -84,14 +84,14 @@ async function SuspenseBoundary({
     // Desktop: video, then a title/complete-toggle row, then description, then nav.
     // Grid areas let each block render once and just get regrouped per breakpoint,
     // instead of duplicating the Previous/Next lookups (real DB queries) per viewport.
-    <div className="items-start gap-7 grid md:grid-cols-[1fr_auto] [grid-template-areas:'title'_'complete'_'description'_'video'_'nav'] md:[grid-template-areas:'video_video'_'title_complete'_'description_description'_'nav_nav']">
+    <div className="items-start gap-7 grid md:grid-cols-[1fr_auto] [grid-template-areas:'video'_'title'_'complete'_'description'_'nav'] md:[grid-template-areas:'video_video'_'title_complete'_'description_description'_'nav_nav']">
       <div className="min-w-0 [grid-area:title]">
         {position != null && (
           <div className="font-mono text-accent text-xs uppercase tracking-[0.08em]">
             {position.sectionName} · Lesson {position.number}
           </div>
         )}
-        <h1 className="mt-2.5 font-semibold text-[clamp(28px,3.4vw,44px)] leading-[1.05] tracking-[-0.04em] text-balance">
+        <h1 className="mt-2.5 font-semibold text-[clamp(28px,3.4vw,44px)] leading-[1.05] tracking-[-0.04em] text-balance max-[720px]:text-[clamp(20px,6vw,26px)] max-[720px]:leading-[1.2] max-[720px]:tracking-[-0.025em]">
           {lesson.name}
         </h1>
       </div>
@@ -106,7 +106,7 @@ async function SuspenseBoundary({
             )}
             variant="ghost"
             className={cn(
-              "px-5 py-2.75 rounded-full h-auto font-medium text-sm whitespace-nowrap",
+              "px-5 py-2.75 max-[720px]:min-h-11 rounded-full h-auto font-medium text-sm whitespace-nowrap",
               isLessonComplete
                 ? "bg-lime text-foreground hover:bg-lime/80"
                 : "border border-foreground hover:bg-foreground hover:text-background",
@@ -117,7 +117,7 @@ async function SuspenseBoundary({
         )}
       </div>
 
-      <div className="md:pt-6 md:border-t [grid-area:description]">
+      <div className="pt-6 border-t [grid-area:description]">
         {canView ? (
           lesson.description && (
             <>
@@ -136,7 +136,7 @@ async function SuspenseBoundary({
         )}
       </div>
 
-      <div className="bg-foreground rounded-3xl aspect-video overflow-hidden [grid-area:video]">
+      <div className="bg-foreground rounded-3xl max-[720px]:rounded-2xl aspect-video overflow-hidden [grid-area:video]">
         {canView ? (
           <YouTubeVideoPlayer
             videoId={lesson.youtubeVideoId}
@@ -191,7 +191,7 @@ function NavPill({
 }) {
   const isNext = arrow === "→"
   const className = cn(
-    "inline-flex items-center rounded-full font-medium text-[15px] whitespace-nowrap transition-colors",
+    "inline-flex items-center max-[720px]:flex-[1_1_140px] max-[720px]:justify-center max-[720px]:min-h-11 rounded-full font-medium text-[15px] whitespace-nowrap transition-colors",
     isNext
       ? "bg-primary px-6.5 py-3.5 text-primary-foreground"
       : "border border-foreground px-6 py-3.25",

@@ -30,11 +30,11 @@ export function SortableSectionList({
           <SortableItem
             key={section.id}
             id={section.id}
-            className="flex items-center gap-3.5"
+            className="flex items-center gap-3.5 max-[720px]:flex-wrap max-[720px]:gap-x-2.5 max-[720px]:gap-y-2"
           >
             <span
               className={cn(
-                "flex flex-1 items-center gap-2 min-w-0 font-medium text-[15px]",
+                "flex flex-1 items-center gap-2 max-[720px]:flex-[1_1_120px] min-w-0 font-medium text-[15px]",
                 section.status === "private" && "text-muted-foreground",
               )}
             >
@@ -49,18 +49,26 @@ export function SortableSectionList({
                 })}
               </span>
             )}
-            <SectionFormDialog section={section} courseId={courseId}>
-              <DialogTrigger render={<Button size={"sm"}>Edit</Button>} />
-            </SectionFormDialog>
-            <ActionButton
-              action={deleteSection.bind(null, section.id)}
-              requireAreYouSure
-              variant={"destructiveOutline"}
-              size={"icon-sm"}
-            >
-              <Trash2Icon />
-              <span className="sr-only">Delete</span>
-            </ActionButton>
+            <div className="flex items-center gap-3.5 max-[720px]:ml-auto max-[720px]:gap-2">
+              <SectionFormDialog section={section} courseId={courseId}>
+                <DialogTrigger
+                  render={
+                    <Button size={"sm"} className="max-[720px]:h-11">
+                      Edit
+                    </Button>
+                  }
+                />
+              </SectionFormDialog>
+              <ActionButton
+                action={deleteSection.bind(null, section.id)}
+                requireAreYouSure
+                variant={"destructiveOutline"}
+                size={"icon-sm"}
+              >
+                <Trash2Icon />
+                <span className="sr-only">Delete</span>
+              </ActionButton>
+            </div>
           </SortableItem>
         ))
       }

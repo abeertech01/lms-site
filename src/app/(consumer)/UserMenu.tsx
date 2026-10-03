@@ -47,18 +47,18 @@ export function UserMenu({ isAdmin }: { isAdmin: boolean }) {
             labelIcon={<GraduationCapIcon className="size-4" />}
           />
         )}
-        {isMobile && isAdmin && (
-          <UserButton.Link
-            href="/admin"
-            label="Admin"
-            labelIcon={<ShieldIcon className="size-4" />}
-          />
-        )}
         {isMobile && (
           <UserButton.Link
             href="/purchases"
             label="Purchases History"
             labelIcon={<ReceiptIcon className="size-4" />}
+          />
+        )}
+        {isMobile && isAdmin && (
+          <UserButton.Link
+            href="/admin"
+            label="Admin"
+            labelIcon={<ShieldIcon className="size-4" />}
           />
         )}
       </UserButton.MenuItems>

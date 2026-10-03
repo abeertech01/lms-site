@@ -23,7 +23,7 @@ export function StatusScreen({
   const isError = tone === "error"
 
   return (
-    <section className="flex flex-col items-start mx-auto px-6 pt-10 pb-24 w-full max-w-310 min-h-[70vh]">
+    <section className="flex flex-col items-start mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-10 pb-24 w-full max-w-310 min-h-[70vh]">
       <Link href="/" className="flex items-center">
         <Image
           src="/triplea-logo.png"
@@ -51,7 +51,7 @@ export function StatusScreen({
         >
           {eyebrow}
         </div>
-        <h1 className="mt-3.5 font-semibold text-[clamp(44px,6vw,84px)] leading-[0.95] tracking-[-0.045em] text-balance">
+        <h1 className="mt-3.5 font-semibold text-[clamp(44px,6vw,84px)] leading-[0.95] tracking-[-0.045em] text-balance max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
           {title}
         </h1>
         <p className="mt-5.5 max-w-120 text-[19px] text-muted-foreground leading-[1.55]">

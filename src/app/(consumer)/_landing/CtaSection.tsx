@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export function CtaSection() {
   return (
-    <section className="px-6 pb-6">
+    <section className="px-6 max-[720px]:px-4 max-[380px]:px-3.5 pb-6">
       <div className="items-end gap-10 grid grid-cols-[repeat(auto-fit,minmax(min(100%,420px),1fr))] bg-accent mx-auto px-[clamp(28px,5vw,72px)] py-[clamp(48px,7vw,96px)] rounded-[28px] max-w-310 text-white">
         <h2 className="font-semibold text-[clamp(44px,6vw,84px)] leading-[0.95] tracking-[-0.045em]">
           Stop watching.

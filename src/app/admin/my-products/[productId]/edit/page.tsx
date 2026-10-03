@@ -22,7 +22,7 @@ export default async function EditProductPage({
   if (product == null) return notFound()
 
   return (
-    <section className="mx-auto px-6 pt-5 pb-27.5 w-full max-w-250 animate-rise">
+    <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-5 pb-27.5 w-full max-w-250 animate-rise">
       <Link
         href="/admin/my-products"
         className="text-[13px] text-ink-soft hover:text-accent transition-colors"
@@ -30,7 +30,7 @@ export default async function EditProductPage({
         ← My products
       </Link>
       <Eyebrow className="mt-3.5">Admin</Eyebrow>
-      <h1 className="mt-2 font-semibold text-[32px] leading-none tracking-[-0.04em]">
+      <h1 className="mt-2 font-semibold text-[32px] leading-none tracking-[-0.04em] max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
         Edit <span className="text-accent">product.</span>
       </h1>
       <div className="bg-card mt-5.5 px-6 py-5 border rounded-[22px]">

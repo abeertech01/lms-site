@@ -55,7 +55,7 @@ function ProductGrid({ products }: { products: Product[] }) {
 
 export function CatalogSectionSkeleton() {
   return (
-    <section className="mx-auto px-6 pt-27.5 pb-10 w-full max-w-310">
+    <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-27.5 pb-10 w-full max-w-310">
       <CatalogHeading />
       <div className={`${gridClass} mt-12`}>
         <SkeletonArray amount={3}>

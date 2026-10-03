@@ -1,14 +1,11 @@
-import { Show, SignInButton } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
 import Image from "next/image"
 import Link from "next/link"
 import { ReactNode, Suspense } from "react"
-import { UserMenu } from "./UserMenu"
-import { GetStartedButton } from "./GetStartedButton"
+import { AnnouncementBar } from "./AnnouncementBar"
+import { HeaderAuth, SignedInNav, SignedOutNav } from "./HeaderNav"
 import { getCurrentUser } from "@/services/clerk"
 import { canAccessAdminPages } from "@/permissions/general"
-
-const navLinkClass =
-  "hidden md:flex items-center text-muted-foreground text-base hover:text-accent transition-colors"
 
 export default function ConsumerLayout({
   children,
@@ -22,24 +19,10 @@ export default function ConsumerLayout({
   )
 }
 
-function AnnouncementBar() {
-  return (
-    <div className="flex flex-wrap justify-center gap-2.5 bg-foreground px-5 py-2.5 text-sm text-background text-center">
-      <span className="bg-lime px-2 py-0.5 rounded-full font-medium font-mono text-xs text-foreground whitespace-nowrap">
-        FAIR PRICING
-      </span>
-      <span>
-        Learning from a lower-income country? A regional discount is applied
-        automatically at checkout.
-      </span>
-    </div>
-  )
-}
-
 function Navbar() {
   return (
     <header className="top-0 z-20 sticky bg-background/85 backdrop-blur-md border-b">
-      <nav className="flex items-center gap-8 mx-auto px-6 py-3.5 w-full max-w-310">
+      <nav className="flex items-center gap-8 mx-auto px-6 py-3.5 w-full max-w-310 max-[720px]:gap-3 max-[720px]:px-4 max-[720px]:py-2.5 max-[380px]:px-3.5">
         <Link className="flex items-center shrink-0" href="/">
           <Image
             src="/triplea-logo.png"
@@ -52,74 +35,22 @@ function Navbar() {
         </Link>
 
         <Suspense fallback={null}>
-          <Show when="signed-in" fallback={<SignedOutNav />}>
-            <div className="flex flex-1 justify-end items-center gap-7 min-w-0">
-              <Link href="/all-products" className={navLinkClass}>
-                All products
-              </Link>
-              <Link href="/courses" className={navLinkClass}>
-                My courses
-              </Link>
-              <Link href="/purchases" className={navLinkClass}>
-                Purchases history
-              </Link>
-              <Suspense fallback={null}>
-                <UserMenuWithAdminCheck />
-              </Suspense>
-            </div>
-          </Show>
+          <ServerHeaderNav />
         </Suspense>
       </nav>
     </header>
   )
 }
 
-function SignedOutNav() {
-  return (
-    <>
-      <div className="flex flex-1 gap-5.5 min-w-0">
-        <Link href="/all-products" className={navLinkClass}>
-          All products
-        </Link>
-        <Link href="/#how" className={navLinkClass}>
-          How it works
-        </Link>
-        <Link href="/#inside" className={navLinkClass}>
-          What&apos;s inside
-        </Link>
-        <Link href="/#faq" className={navLinkClass}>
-          FAQ
-        </Link>
-      </div>
-      <div className="flex items-center gap-2.5 ml-auto shrink-0">
-        <SignInButton>
-          <button
-            type="button"
-            className="px-3.5 py-2 font-medium text-base cursor-pointer"
-          >
-            Sign in
-          </button>
-        </SignInButton>
-        <GetStartedButton />
-      </div>
-    </>
-  )
-}
+// NOTE: renders the header the way the server sees the visitor, so the very first paint
+// is already right. HeaderAuth takes over in the browser once Clerk has loaded.
+async function ServerHeaderNav() {
+  const { userId } = await auth()
 
-async function UserMenuWithAdminCheck() {
+  if (userId == null) return <HeaderAuth initial={<SignedOutNav />} />
+
   const user = await getCurrentUser({ allData: true })
-  const isAdmin = canAccessAdminPages(user)
-
   return (
-    <>
-      {isAdmin && (
-        <Link href="/admin" className={navLinkClass}>
-          Admin
-        </Link>
-      )}
-      <div className="size-9 shrink-0">
-        <UserMenu isAdmin={isAdmin} />
-      </div>
-    </>
+    <HeaderAuth initial={<SignedInNav isAdmin={canAccessAdminPages(user)} />} />
   )
 }

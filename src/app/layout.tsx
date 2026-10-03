@@ -26,6 +26,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en">
       <body
+        // NOTE: browser extensions (e.g. ColorZilla adds cz-shortcut-listen) edit <body>
+        // before React loads; this silences that one harmless mismatch warning.
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <ClerkProvider appearance={clerkAppearance}>

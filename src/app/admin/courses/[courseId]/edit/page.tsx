@@ -37,7 +37,7 @@ export default async function EditCoursePage({
   }))
 
   return (
-    <div className="mx-auto px-6 pt-9 pb-27.5 w-full max-w-310">
+    <div className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-9 pb-27.5 w-full max-w-310">
       <div className="animate-rise">
         <Link
           href="/admin/courses"
@@ -46,17 +46,21 @@ export default async function EditCoursePage({
           ← Courses
         </Link>
         <Eyebrow className="mt-5.5">Edit course</Eyebrow>
-        <h1 className="mt-3 font-semibold text-[clamp(40px,5.4vw,68px)] leading-[0.98] tracking-[-0.045em]">
+        <h1 className="mt-3 font-semibold text-[clamp(40px,5.4vw,68px)] leading-[0.98] tracking-[-0.045em] max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
           {course.name}
         </h1>
       </div>
       <Tabs defaultValue="lessons" className="mt-7 gap-6">
         <TabsList>
-          <TabsTrigger value="lessons">Lessons</TabsTrigger>
-          <TabsTrigger value="details">Details</TabsTrigger>
+          <TabsTrigger value="lessons" className="max-[720px]:min-h-11">
+            Lessons
+          </TabsTrigger>
+          <TabsTrigger value="details" className="max-[720px]:min-h-11">
+            Details
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="lessons" className="flex flex-col gap-5">
-          <div className="bg-card px-7 pt-2 pb-3 border rounded-[22px]">
+          <div className="bg-card px-7 pt-2 pb-3 max-[720px]:px-4 max-[720px]:pt-1 max-[720px]:pb-2 border rounded-[22px]">
             <div className="flex justify-between items-center gap-4 pt-4.5 pb-3.5 border-b">
               <h2 className="font-semibold text-lg tracking-[-0.02em]">
                 Sections
@@ -64,7 +68,11 @@ export default async function EditCoursePage({
               <SectionFormDialog courseId={course.id}>
                 <DialogTrigger
                   render={
-                    <Button variant={"outline"} size={"sm"}>
+                    <Button
+                      variant={"outline"}
+                      size={"sm"}
+                      className="max-[720px]:h-11"
+                    >
                       + New section
                     </Button>
                   }
@@ -76,7 +84,7 @@ export default async function EditCoursePage({
           {course.courseSections.map((section) => (
             <div
               key={section.id}
-              className="bg-card px-7 pt-2 pb-3 border rounded-[22px]"
+              className="bg-card px-7 pt-2 pb-3 max-[720px]:px-4 max-[720px]:pt-1 max-[720px]:pb-2 border rounded-[22px]"
             >
               <div className="flex justify-between items-center gap-4 pt-4.5 pb-3.5 border-b">
                 <h2
@@ -96,7 +104,11 @@ export default async function EditCoursePage({
                 >
                   <DialogTrigger
                     render={
-                      <Button variant={"outline"} size={"sm"}>
+                      <Button
+                        variant={"outline"}
+                        size={"sm"}
+                        className="max-[720px]:h-11"
+                      >
                         + New lesson
                       </Button>
                     }
@@ -111,7 +123,7 @@ export default async function EditCoursePage({
           ))}
         </TabsContent>
         <TabsContent value="details">
-          <div className="bg-card px-7.5 py-7.5 border rounded-[22px] max-w-190">
+          <div className="bg-card px-7.5 py-7.5 max-[720px]:px-4 max-[720px]:py-5 border rounded-[22px] max-w-190">
             <CourseForm course={course} />
           </div>
         </TabsContent>

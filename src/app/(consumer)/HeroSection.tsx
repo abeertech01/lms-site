@@ -11,13 +11,13 @@ const lessons = [
 
 export function HeroSection() {
   return (
-    <section className="gap-16 grid grid-cols-[repeat(auto-fit,minmax(min(100%,460px),1fr))] items-center mx-auto px-6 pt-22 pb-18 w-full max-w-310">
+    <section className="gap-16 grid grid-cols-[repeat(auto-fit,minmax(min(100%,460px),1fr))] items-center mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-22 pb-18 w-full max-w-310 max-[720px]:gap-8 max-[720px]:pt-10">
       <div className="animate-rise">
         <div className="inline-flex items-center gap-2 bg-violet-soft px-3 py-1.5 border border-violet-line rounded-full font-mono text-accent text-xs uppercase tracking-[0.06em] whitespace-nowrap">
           <span className="bg-accent rounded-full size-1.5" />
           Learning, made practical
         </div>
-        <h1 className="mt-6.5 font-semibold text-[clamp(48px,6.6vw,92px)] leading-[0.95] tracking-[-0.045em] text-balance">
+        <h1 className="mt-6.5 font-semibold text-[clamp(48px,6.6vw,92px)] leading-[0.95] tracking-[-0.045em] text-balance max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
           Learn new skills.
           <br />
           <span className="text-accent">Build real</span> projects.
@@ -107,7 +107,9 @@ export function HeroSection() {
                 ) : (
                   <span className="border-[1.5px] border-line-strong rounded-full size-5.5" />
                 )}
-                <span className={lesson.done ? "flex-1 line-through" : "flex-1"}>
+                <span
+                  className={lesson.done ? "flex-1 line-through" : "flex-1"}
+                >
                   {lesson.name}
                 </span>
                 {lesson.current && (
@@ -117,7 +119,7 @@ export function HeroSection() {
             ))}
           </div>
         </div>
-        <div className="hidden sm:flex -bottom-6.5 -left-7 absolute items-center gap-3 bg-lime shadow-[0_16px_40px_-16px_rgba(40,30,10,0.35)] px-4.5 py-3.5 rounded-2xl -rotate-3">
+        <div className="-bottom-6.5 -left-7 max-[720px]:left-2 absolute flex items-center gap-3 bg-lime shadow-[0_16px_40px_-16px_rgba(40,30,10,0.35)] px-4.5 py-3.5 rounded-2xl -rotate-3">
           <span className="font-bold text-xl tracking-[-0.02em]">Shipped.</span>
           <span className="text-[13px] leading-[1.3]">
             Final project

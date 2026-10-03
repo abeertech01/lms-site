@@ -24,21 +24,21 @@ export default async function CoursesPage() {
 
   return (
     <>
-      <section className="mx-auto px-6 pt-14 w-full max-w-310 animate-rise">
+      <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-14 max-[720px]:pt-8 w-full max-w-310 animate-rise">
         <Eyebrow>Admin</Eyebrow>
         <div className="flex flex-wrap justify-between items-end gap-8 mt-3.5">
-          <h1 className="font-semibold text-[clamp(44px,6vw,80px)] leading-[0.95] tracking-[-0.045em]">
+          <h1 className="font-semibold text-[clamp(44px,6vw,80px)] leading-[0.95] tracking-[-0.045em] max-[720px]:text-[clamp(32px,11vw,48px)] max-[720px]:leading-[1.02] max-[380px]:text-[clamp(28px,10.5vw,36px)]">
             Courses<span className="text-accent">.</span>
           </h1>
           <Link
             href="/admin/courses/new"
-            className="bg-primary px-6 py-3.5 rounded-full font-medium text-[15px] text-primary-foreground hover:text-white whitespace-nowrap transition-colors hover:bg-accent"
+            className="bg-primary px-6 py-3.5 max-[720px]:min-h-11 max-[720px]:inline-flex max-[720px]:items-center rounded-full font-medium text-[15px] text-primary-foreground hover:text-white whitespace-nowrap transition-colors hover:bg-accent"
           >
             + New course
           </Link>
         </div>
       </section>
-      <section className="mx-auto px-6 pt-10 pb-27.5 w-full max-w-310">
+      <section className="mx-auto px-6 max-[720px]:px-4 max-[380px]:px-3.5 pt-10 pb-27.5 w-full max-w-310">
         <CourseTable courses={courses} />
       </section>
     </>

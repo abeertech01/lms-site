@@ -6,7 +6,7 @@ import Link from "next/link"
 import { deleteCourse } from "../actions/courses"
 
 const rowClass =
-  "gap-4 grid grid-cols-[minmax(0,1fr)_auto_auto] md:grid-cols-[minmax(0,1fr)_90px_180px] items-center px-5 md:px-7"
+  "gap-4 grid grid-cols-[minmax(0,1fr)_auto_auto] max-[720px]:grid-cols-[minmax(0,1fr)_auto] max-[720px]:gap-x-3.5 max-[720px]:gap-y-3 max-[720px]:p-4 md:grid-cols-[minmax(0,1fr)_90px_180px] items-center px-5 md:px-7"
 
 export default function CourseTable({
   courses,
@@ -22,7 +22,7 @@ export default function CourseTable({
   return (
     <div className="bg-card border rounded-[22px] overflow-hidden">
       <div
-        className={`${rowClass} py-4 border-b font-mono text-[11px] text-ink-soft uppercase tracking-[0.06em]`}
+        className={`${rowClass} py-4 max-[720px]:hidden border-b font-mono text-[11px] text-ink-soft uppercase tracking-[0.06em]`}
       >
         <span>
           {formatPlural(courses.length, {
@@ -39,7 +39,7 @@ export default function CourseTable({
             key={course.id}
             className={`${rowClass} py-3.5 border-b last:border-b-0`}
           >
-            <div className="min-w-0">
+            <div className="max-[720px]:col-span-2 min-w-0">
               <div className="font-semibold text-[15px] tracking-[-0.01em]">
                 {course.name}
               </div>
@@ -55,12 +55,16 @@ export default function CourseTable({
                 })}
               </div>
             </div>
-            <span className="font-medium text-[15px]">
+            <span className="font-medium text-[15px] max-[720px]:text-sm max-[720px]:font-normal max-[720px]:text-muted-foreground">
               {course.studentsCount}
+              <span className="hidden max-[720px]:inline">
+                {course.studentsCount === 1 ? " student" : " students"}
+              </span>
             </span>
-            <div className="flex justify-end items-center gap-2">
+            <div className="flex max-[720px]:flex-wrap justify-end items-center gap-2">
               <Button
                 size="sm"
+                className="max-[720px]:h-11"
                 nativeButton={false}
                 render={
                   <Link href={`/admin/courses/${course.id}/edit`}>Edit</Link>

@@ -22,18 +22,20 @@ export const clerkAppearance = {
     borderRadius: "var(--radius-md)",
   },
   elements: {
-    cardBox: "shadow-xl border border-border",
-    card: "gap-6 p-8",
+    rootBox: "max-[480px]:w-full!",
+    cardBox:
+      "shadow-xl border border-border max-[480px]:w-full! max-[480px]:max-w-full!",
+    card: "gap-6 p-8 max-[480px]:gap-5 max-[480px]:p-5",
     headerTitle: "text-2xl font-semibold",
     headerSubtitle: "text-muted-foreground",
     socialButtonsBlockButton:
-      "border-border hover:bg-muted rounded-lg h-9 text-sm font-medium",
+      "border-border hover:bg-muted rounded-lg h-9 text-sm font-medium max-[720px]:h-11! max-[720px]:text-base!",
     dividerLine: "bg-border",
     dividerText: "text-muted-foreground text-xs uppercase tracking-wide",
     formFieldLabel: "text-foreground text-sm font-medium",
-    formFieldInput: "rounded-lg h-9",
+    formFieldInput: "rounded-lg h-9 max-[720px]:h-11! max-[720px]:text-base!",
     formButtonPrimary:
-      "rounded-lg h-9 text-sm font-medium normal-case shadow-none",
+      "rounded-lg h-9 text-sm font-medium normal-case shadow-none max-[720px]:h-11! max-[720px]:text-base!",
     footerActionText: "text-muted-foreground text-sm",
     footerActionLink:
       "text-primary font-medium hover:underline underline-offset-4",
