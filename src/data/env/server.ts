@@ -16,6 +16,8 @@ export const env = createEnv({
     STRIPE_PPP_20_COUPON_ID: z.string().min(1),
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
+    SANITY_REVALIDATE_SECRET: z.string().min(1).optional(),
+    GOOGLE_SITE_VERIFICATION: z.string().min(1).optional(),
   },
   experimental__runtimeEnv: process.env,
 })
