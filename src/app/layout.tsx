@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer"
 import { ClerkProvider } from "@clerk/nextjs"
 import { clerkAppearance } from "@/lib/clerkAppearance"
 import { env } from "@/data/env/client"
+import { env as serverEnv } from "@/data/env/server"
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
 const geistMono = Geist_Mono({
@@ -20,6 +21,8 @@ export const instant = false
 // NOTE: metadataBase turns relative metadata URLs (canonical, og:image) into absolute ones.
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_SERVER_URL),
+  // NOTE: proves site ownership to Google Search Console. Renders <meta name="google-site-verification"> on every page, including the home page.
+  verification: { google: serverEnv.GOOGLE_SITE_VERIFICATION },
   title: "TripleA LMS",
   description:
     "Learn new skills. Build real projects - A learning management system",
