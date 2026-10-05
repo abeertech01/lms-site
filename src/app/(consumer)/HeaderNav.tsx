@@ -17,6 +17,9 @@ export function SignedOutNav() {
         <Link href="/all-products" className={navLinkClass}>
           All products
         </Link>
+        <Link href="/blog" className={navLinkClass}>
+          Blog
+        </Link>
         <Link href="/#how" className={navLinkClass}>
           How it works
         </Link>
@@ -48,6 +51,9 @@ export function SignedInNav({ isAdmin }: { isAdmin: boolean }) {
     <div className="flex flex-1 justify-end items-center gap-7 min-w-0">
       <Link href="/all-products" className={navLinkClass}>
         All products
+      </Link>
+      <Link href="/blog" className={navLinkClass}>
+        Blog
       </Link>
       <Link href="/courses" className={navLinkClass}>
         My courses
