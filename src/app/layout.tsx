@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toast"
 import { Footer } from "@/components/Footer"
 import { ClerkProvider } from "@clerk/nextjs"
 import { clerkAppearance } from "@/lib/clerkAppearance"
+import { env } from "@/data/env/client"
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
 const geistMono = Geist_Mono({
@@ -16,7 +17,9 @@ const geistMono = Geist_Mono({
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
 export const instant = false
 
+// NOTE: metadataBase turns relative metadata URLs (canonical, og:image) into absolute ones.
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_SERVER_URL),
   title: "TripleA LMS",
   description:
     "Learn new skills. Build real projects - A learning management system",

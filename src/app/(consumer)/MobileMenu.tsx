@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from "react"
 
 const allProductsLink = { label: "All products", href: "/all-products" }
 // NOTE: these three sections only exist on the landing page, so they are left out on the All products page.
+const blogLink = { label: "Blog", href: "/blog" }
+
 const landingLinks = [
   { label: "How it works", href: "/#how" },
   { label: "What's inside", href: "/#inside" },
@@ -26,8 +28,8 @@ export function MobileMenu() {
   const pathname = usePathname()
   const links =
     pathname === "/all-products"
-      ? [allProductsLink]
-      : [allProductsLink, ...landingLinks]
+      ? [allProductsLink, blogLink]
+      : [allProductsLink, blogLink, ...landingLinks]
 
   // NOTE: close the menu after navigating (adjusting state during render, like the course sidebar).
   const [lastPathname, setLastPathname] = useState(pathname)

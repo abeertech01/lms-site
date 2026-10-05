@@ -55,3 +55,19 @@ export async function getPost(slug: string): Promise<Post | null> {
     { slug },
   )
 }
+
+// NOTE: only what the sitemap needs. Posts with the noIndex switch are left out so they aren't advertised to Google.
+export async function getSitemapPosts(): Promise<
+  { slug: string; _updatedAt: string }[]
+> {
+  "use cache"
+  cacheTag("post")
+  cacheLife("hours")
+
+  if (!isSanityConfigured) return []
+  return client.fetch(
+    `*[_type == "post" && defined(slug.current) && seo.noIndex != true] | order(publishedAt desc) {
+      "slug": slug.current, _updatedAt
+    }`,
+  )
+}
